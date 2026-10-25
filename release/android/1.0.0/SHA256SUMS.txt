@@ -1,0 +1,2 @@
+e5225f486ff776792406bcac5f782b183f5fbc6953a5840d9f113b316808f0dc  woodyouloveit-wtms-1.0.0-release.aab
+b09407bdc7976aa523bb699444a126630cd83b02218ed79f838cf116126b5364  woodyouloveit-wtms-1.0.0-release.apk

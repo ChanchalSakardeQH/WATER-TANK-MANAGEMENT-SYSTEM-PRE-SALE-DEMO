@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WTMS Demo</string>
+    <string name="title">Water Tanks Monitor</string>
+    <string name="subtitle">Demo with sample data</string>
+    <string name="brand">woodyouloveit.com</string>
+
+    <!-- Where enquiries go. Change both together if the number changes. -->
+    <string name="contact_whatsapp" translatable="false">919284817975</string>
+    <string name="contact_whatsapp_display" translatable="false">+91 92848 17975</string>
+
+    <string name="contact_us">Contact us</string>
+    <string name="how_it_works">How this demo works</string>
+    <string name="reset_demo">Reset demo</string>
+    <string name="about">About</string>
+    <string name="loading">Loading the demo…</string>
+
+    <!-- Contact form -->
+    <string name="contact_title">Get it for your society</string>
+    <string name="contact_intro">Tell us about your society and we’ll send a quote for the Water Tanks Monitor. Fields marked * are needed.</string>
+    <string name="sec_society">Your society</string>
+    <string name="sec_contact">Point of contact</string>
+    <string name="sec_water">Buildings and tanks</string>
+    <string name="sec_more">Anything else</string>
+    <string name="f_society">Society name *</string>
+    <string name="f_address">Society address *</string>
+    <string name="f_city">City or area *</string>
+    <string name="f_pin">PIN code</string>
+    <string name="f_person">Contact person *</string>
+    <string name="f_role">Role in the society</string>
+    <string name="f_mobile">Mobile number *</string>
+    <string name="f_email">Email</string>
+    <string name="f_time">Best time to call</string>
+    <string name="f_buildings">Buildings or wings *</string>
+    <string name="f_tanks">Overhead tanks *</string>
+    <string name="f_tanks_help">Count each tank once, even if it has two compartments</string>
+    <string name="f_sumps">Underground sumps</string>
+    <string name="f_flats">Average flats per building *</string>
+    <string name="f_message">Message or questions</string>
+    <string name="f_consent">I agree to be contacted about the Water Tanks Monitor on this number.</string>
+    <string name="send_whatsapp">Send on WhatsApp</string>
+    <string name="send_other">Share another way</string>
+    <string name="clear_form">Clear form</string>
+    <string name="privacy_note">Your details go only to us, through the app you choose. Nothing is stored online by this app.</string>
+</resources>

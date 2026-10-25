@@ -1,0 +1,146 @@
+Water Tanks Monitor Android build (woodyouloveit) - 2026-10-25T00:45:06 - task Menu
+==> Checking the set-up
+    [ok] Android folder: D:\Android
+    [ok] Gradle folder: D:\Android\Gradle
+    [ok] Java 21: C:\Program Files\Microsoft\jdk-21.0.6.7-hotspot\
+    [ok] Android SDK: D:\Android\Sdk
+    [ok] Android SDK licence accepted
+    [ok] adb (phone connection) found
+    [ok] apksigner: 36.0.0
+==> Release signing
+    Using the remembered keystore password.
+    > C:\Program Files\Microsoft\jdk-21.0.6.7-hotspot\bin\keytool.exe -list -keystore D:\Android\Keys\wtms-release.jks -alias wtms -storepass ***
+wtms, 14-Oct-2026, PrivateKeyEntry, 
+Certificate fingerprint (SHA-256): B8:86:A9:69:B5:FB:86:4D:1F:73:DA:9E:3C:36:D9:7E:55:AA:36:7B:2C:A4:A4:DA:57:5D:45:20:62:9C:18:D5
+    [ok] Signing with D:\Android\Keys\wtms-release.jks (alias wtms)
+==> Compiling the signed release APK and AAB
+    > D:\Android\Projects\WTMS-DEMO-APP-V1\android\gradlew.bat assembleRelease bundleRelease -PappVersionCode=1 -PappVersionName=1.0.0 --console=plain
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig
+> Task :app:generateReleaseResValues
+> Task :app:checkReleaseAarMetadata
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseResources
+> Task :app:mergeReleaseNativeLibs NO-SOURCE
+> Task :app:stripReleaseDebugSymbols NO-SOURCE
+> Task :app:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseStartupProfile
+> Task :app:mergeReleaseShaders
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:processReleaseManifestForPackage
+> Task :app:compressReleaseAssets
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:processApplicationManifestReleaseForBundle
+> Task :app:configureReleaseDependencies
+> Task :app:generateReleaseFeatureMetadata
+> Task :app:parseReleaseIntegrityConfig
+> Task :app:processReleaseResources
+> Task :app:convertLinkedResourcesToProtoRelease
+> Task :app:bundleReleaseResources
+> Task :app:compileReleaseKotlin
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseGeneratedProguardFiles
+> Task :app:processReleaseJavaRes
+> Task :app:expandReleaseArtProfileWildcards
+> Task :app:mergeReleaseJavaResource
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:minifyReleaseWithR8
+> Task :app:buildReleasePreBundle
+> Task :app:compileReleaseArtProfile
+> Task :app:packageReleaseBundle
+> Task :app:shrinkBundleReleaseResources
+> Task :app:shrinkReleaseRes
+> Task :app:convertShrunkResourcesToBinaryRelease
+> Task :app:optimizeReleaseResources
+> Task :app:signReleaseBundle
+> Task :app:produceReleaseBundleIdeListingFile
+> Task :app:createReleaseBundleListingFileRedirect
+> Task :app:bundleRelease
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
+
+[Incubating] Problems report is available at: file:///D:/Android/Projects/WTMS-DEMO-APP-V1/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 46s
+59 actionable tasks: 59 executed
+==> Checking the signatures
+    > D:\Android\Sdk\build-tools\36.0.0\apksigner.bat verify --print-certs D:\Android\Projects\WTMS-DEMO-APP-V1\release\android\1.0.0\woodyouloveit-wtms-1.0.0-release.apk
+Signer #1 certificate DN: CN=Chanchal Sakarde, O=woodyouloveit, L=Pune, ST=Maharashtra, C=IN
+Signer #1 certificate SHA-256 digest: b886a969b5fb864d1f73da9e3c36d97e55aa367b2ca4a4da575d4520629c18d5
+Signer #1 certificate SHA-1 digest: c0df5e2155035ad1f43c2726af35ec37e5be73f0
+Signer #1 certificate MD5 digest: bd98a12eb457b85348fba20c0db0a7df
+    [ok] Signature verified: woodyouloveit-wtms-1.0.0-release.apk (CN=Chanchal Sakarde, O=woodyouloveit, L=Pune, ST=Maharashtra, C=IN)
+    > C:\Program Files\Microsoft\jdk-21.0.6.7-hotspot\bin\jarsigner.exe -verify D:\Android\Projects\WTMS-DEMO-APP-V1\release\android\1.0.0\woodyouloveit-wtms-1.0.0-release.aab
+
+jar verified.
+
+Warning: 
+This jar contains entries whose certificate chain is invalid. Reason: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+This jar contains entries whose signer certificate is self-signed.
+This jar contains signatures that do not include a timestamp. Without a timestamp, users may not be able to validate this jar after any of the signer certificates expire (as early as 2054-03-01).
+POSIX file permission and/or symlink attributes detected. These attributes are ignored when signing and are not protected by the signature.
+
+Re-run with the -verbose and -certs options for more details.
+    [ok] Signature verified: woodyouloveit-wtms-1.0.0-release.aab
+    [ok] Release APK: D:\Android\Projects\WTMS-DEMO-APP-V1\release\android\1.0.0\woodyouloveit-wtms-1.0.0-release.apk
+    [ok] Release AAB (upload this to Google Play): D:\Android\Projects\WTMS-DEMO-APP-V1\release\android\1.0.0\woodyouloveit-wtms-1.0.0-release.aab
+==> Installing on the phone
+    > D:\Android\Sdk\platform-tools\adb.exe devices
+List of devices attached
+eb7e0d3efdb2	device
+
+    > D:\Android\Sdk\platform-tools\adb.exe install -r D:\Android\Projects\WTMS-DEMO-APP-V1\release\android\1.0.0\woodyouloveit-wtms-1.0.0-release.apk
+Performing Streamed Install
+Success
+    [ok] Installed on eb7e0d3efdb2
+    > D:\Android\Sdk\platform-tools\adb.exe shell monkey -p com.woodyouloveit.wtms -c android.intent.category.LAUNCHER 1
+  bash arg: -p
+  bash arg: com.woodyouloveit.wtms
+  bash arg: -c
+  bash arg: android.intent.category.LAUNCHER
+  bash arg: 1
+args: [-p, com.woodyouloveit.wtms, -c, android.intent.category.LAUNCHER, 1]
+ arg: "-p"
+ arg: "com.woodyouloveit.wtms"
+ arg: "-c"
+ arg: "android.intent.category.LAUNCHER"
+ arg: "1"
+data="com.woodyouloveit.wtms"
+data="android.intent.category.LAUNCHER"
+Events injected: 1
+## Network stats: elapsed time=121ms (0ms mobile, 0ms wifi, 121ms not connected)
+    [ok] App started on the phone

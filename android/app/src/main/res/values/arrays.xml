@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="roles">
+        <item>Chairman</item>
+        <item>Secretary</item>
+        <item>Treasurer</item>
+        <item>Committee member</item>
+        <item>Facility or estate manager</item>
+        <item>Resident</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="call_times">
+        <item>Any time</item>
+        <item>Morning (9 am to 12 pm)</item>
+        <item>Afternoon (12 pm to 4 pm)</item>
+        <item>Evening (4 pm to 8 pm)</item>
+    </string-array>
+</resources>

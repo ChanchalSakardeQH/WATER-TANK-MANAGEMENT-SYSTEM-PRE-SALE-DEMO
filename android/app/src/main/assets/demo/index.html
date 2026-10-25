@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Water Tanks Monitor – live demo</title>
+<style>
+@font-face{font-family:"Baloo 2";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/baloo-2-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Baloo 2";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/baloo-2-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Baloo 2";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/baloo-2-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Baloo 2";font-style:normal;font-weight:800;font-display:swap;src:url(fonts/baloo-2-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Hind";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/hind-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Hind";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/hind-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Hind";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/hind-latin-600-normal.woff2) format("woff2")}
+:root{
+  --bg:#E9F3F2;--surface:#FFFFFF;--surface-2:#F2F8F7;--ink:#0F2A2E;--ink-2:#4B6569;--line:#D2E3E1;
+  --teal:#0B7379;--teal-soft:#D5EDEC;--water:#38B8DC;--water-deep:#12709E;
+  --pink:#D23A6E;--pink-soft:#FBE3EC;--amber:#A86500;--amber-soft:#FBEFD8;--red:#C32F2B;--red-soft:#F9E0DE;
+  --green:#1F8456;--green-soft:#DDF2E6;--focus:#D23A6E;
+  --tk-bg:#0C3236;--tk-ink:#E8F6F5;--tk-ink-2:#9CC3C4;--led-off:#1C4247;
+  --fd:"Baloo 2","Trebuchet MS",system-ui,sans-serif;--fb:"Hind","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1B1E;--surface:#10272B;--surface-2:#153136;--ink:#E3F2F1;--ink-2:#98B4B6;--line:#244449;
+  --teal:#46C3C6;--teal-soft:#123A3E;--pink:#F0699A;--pink-soft:#3A1826;--amber:#F0B44A;--amber-soft:#3A2A10;
+  --red:#F07A70;--red-soft:#3A1A18;--green:#5BD08F;--green-soft:#123222;--tk-bg:#071F22;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1B1E;--surface:#10272B;--surface-2:#153136;--ink:#E3F2F1;--ink-2:#98B4B6;--line:#244449;
+  --teal:#46C3C6;--teal-soft:#123A3E;--pink:#F0699A;--pink-soft:#3A1826;--amber:#F0B44A;--amber-soft:#3A2A10;
+  --red:#F07A70;--red-soft:#3A1A18;--green:#5BD08F;--green-soft:#123222;--tk-bg:#071F22;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--fb);padding-bottom:110px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+h1,h2,h3,h4{font-family:var(--fd);line-height:1.15;margin:0;font-weight:700}
+h2{font-size:1.35rem}h3{font-size:1.1rem}h4{font-size:.98rem;font-weight:600}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.muted{color:var(--ink-2)}
+small{font-size:.85rem}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.demo-strip{background:var(--pink-soft);color:var(--ink);font-size:.9rem;padding:6px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+.demo-strip b{color:var(--pink)}
+.inapp .brand{display:none}
+.inapp .devpick{margin-right:auto}
+.cta{background:var(--pink);color:#fff;border:0;border-radius:999px;padding:3px 12px;font-weight:600;cursor:pointer}
+.linkbtn{background:none;border:0;padding:2px 0;color:var(--pink);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.bar{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.brand svg{width:34px;height:40px;flex:none}
+.brand b{font-family:var(--fd);font-size:1.25rem;display:block;line-height:1}
+.brand small{color:var(--ink-2);font-size:.8rem}
+.devpick select{appearance:none;background:var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23668' fill='none' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 12px center;border:1px solid var(--line);border-radius:10px;padding:8px 36px 8px 12px;font-weight:600;max-width:260px}
+.conn{display:flex;align-items:center;gap:7px;font-size:.9rem;color:var(--ink-2)}
+.conn i{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.conn.warn i{background:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
+.role{border:1px solid var(--teal);background:transparent;color:var(--teal);border-radius:999px;padding:6px 14px;font-weight:600;cursor:pointer}
+.role.on{background:var(--teal);color:var(--surface)}
+.tabs{max-width:1120px;margin:0 auto;padding:0 10px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs button{background:none;border:0;padding:10px 14px 12px;font-weight:600;color:var(--ink-2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--teal);border-bottom-color:var(--teal)}
+.tabs .lock{font-size:.8em;opacity:.7}
+
+main{max-width:1120px;margin:0 auto;padding:18px 16px}
+.tab[hidden]{display:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.card > h2,.card > h3{margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid2 > .card{margin-bottom:0}
+.stack{display:grid;gap:16px;margin-bottom:16px}
+.btn{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--teal);border-color:var(--teal);color:var(--surface)}
+.btn.warn{color:var(--red);border-color:var(--red-soft)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;border-radius:7px;padding:5px 11px;font-weight:600;color:var(--ink-2);cursor:pointer;font-size:.92rem}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--teal);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+/* overview */
+.ov{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.tankcard{background:var(--tk-bg);color:var(--tk-ink);border-radius:24px;padding:18px 18px 12px;position:relative;overflow:hidden;border:0}
+.tankcard .cap{display:flex;justify-content:space-between;color:var(--tk-ink-2);font-size:.9rem;margin-bottom:4px}
+.tankwrap{display:flex;align-items:stretch;gap:14px}
+#tankSvg{flex:1;min-width:0;height:auto;max-height:340px}
+#tankSvg text{font-family:var(--fd)}
+.wave{animation:wave 2.6s linear infinite}
+.wave.b{animation-duration:3.8s;animation-direction:reverse;opacity:.45}
+@keyframes wave{to{transform:translateX(40px)}}
+.wl{transition:transform .5s ease}
+.stream{stroke-dasharray:3 6;animation:flow .5s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-9}}
+.leds{display:flex;gap:10px;align-items:flex-end;padding:30px 0 34px}
+.ledgrp{display:flex;flex-direction:column;align-items:center;gap:6px}
+.ledcols{display:flex;gap:5px;height:230px}
+.strip{display:flex;flex-direction:column-reverse;gap:2px;width:12px;background:#08191b;border-radius:6px;padding:3px 2px;position:relative}
+.led{flex:1;border-radius:3px;background:var(--led-off);transition:background-color .15s}
+.din{font-size:.62rem;color:var(--tk-ink-2);line-height:1}
+.ledgrp small{color:var(--tk-ink-2);font-size:.75rem}
+.restart-ov[hidden]{display:none}
+.restart-ov{position:absolute;inset:0;background:rgba(5,25,28,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-family:var(--fd);font-size:1.2rem}
+.spin{width:28px;height:28px;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ovside{display:flex;flex-direction:column;gap:12px}
+.bignum{display:flex;align-items:baseline;gap:6px}
+.bignum .pct{font-family:var(--fd);font-weight:800;font-size:5rem;line-height:.9;color:var(--teal);font-variant-numeric:tabular-nums}
+.bignum .u{font-family:var(--fd);font-size:2rem;color:var(--ink-2);font-weight:600}
+.litres{font-size:1.15rem;font-weight:600}
+.complist{display:grid;gap:8px}
+.comprow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:.95rem}
+.minibar{height:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.minibar i{display:block;height:100%;background:var(--water);transition:width .5s}
+.alerts{display:grid;gap:8px}
+.alert{border-radius:12px;padding:10px 12px 10px 14px;border-left:5px solid;font-size:.95rem;background:var(--surface)}
+.alert b{display:block;font-family:var(--fd);font-size:1.02rem}
+.alert.ok{border-color:var(--green);background:var(--green-soft)}
+.alert.info{border-color:var(--teal);background:var(--teal-soft)}
+.alert.warn{border-color:var(--amber);background:var(--amber-soft)}
+.alert.bad{border-color:var(--red);background:var(--red-soft)}
+.alert.pink{border-color:var(--pink);background:var(--pink-soft)}
+.today{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.today a{display:block;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.today a span{display:block;font-size:.82rem;color:var(--ink-2)}
+.today a b{font-family:var(--fd);font-size:1.12rem}
+.glance{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px 18px;margin:0}
+.glance div{padding:8px 0;border-bottom:1px dashed var(--line)}
+.glance dt{font-size:.82rem;color:var(--ink-2)}
+.glance dd{margin:0;font-weight:600}
+.warnlist{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.warnlist li{background:var(--amber-soft);border-radius:8px;padding:6px 10px;font-size:.92rem}
+
+/* analytics */
+.an-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.an-head h2{margin-right:auto}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.tile span{display:block;font-size:.82rem;color:var(--ink-2)}
+.tile b{display:block;font-family:var(--fd);font-size:1.45rem;line-height:1.2}
+.tile small{color:var(--ink-2)}
+.tile.hl{border-color:var(--teal);background:var(--teal-soft)}
+.chart{position:relative;width:100%;min-height:240px}
+.chart.sm{min-height:180px}
+.chart svg{display:block;overflow:visible}
+.chart text{font:12px var(--fb);fill:var(--ink-2)}
+.gridl{stroke:var(--line);stroke-width:1}
+.band-fill{fill:var(--teal);opacity:.13}
+.band-night{fill:var(--ink-2);opacity:.09}
+.bar-r{fill:var(--water)}
+.bar-r.hl{fill:var(--pink)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);font-size:.82rem;padding:6px 9px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-110%);display:none;z-index:2}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--ink-2);margin:8px 0 0}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th{text-align:left;font-weight:600;color:var(--ink-2);font-size:.82rem;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tblwrap{overflow-x:auto}
+.chip{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.84rem;font-weight:600;white-space:nowrap}
+.chip.ok{background:var(--green-soft);color:var(--green)}
+.chip.watch{background:var(--amber-soft);color:var(--amber)}
+.chip.leak{background:var(--red-soft);color:var(--red)}
+.chip.drop{background:var(--teal-soft);color:var(--teal)}
+.chip.na{background:var(--surface-2);color:var(--ink-2)}
+
+/* forms */
+.lockbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--teal-soft);border-radius:12px;padding:10px 14px;margin-bottom:16px}
+.lockbar p{margin:0;flex:1;min-width:200px}
+.f{display:grid;gap:4px;margin-bottom:12px}
+.f > span{font-size:.88rem;font-weight:600}
+.f small{color:var(--ink-2)}
+.f input[type=text],.f input[type=number],.f input[type=password],.f select{border:1px solid var(--line);background:var(--surface-2);border-radius:9px;padding:8px 10px;width:100%}
+.f input:disabled,.f select:disabled{opacity:.6}
+.f3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.f2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.radios{display:flex;gap:16px;flex-wrap:wrap}
+.radios label{display:flex;gap:6px;align-items:center}
+.preview{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0 12px;font-size:.95rem}
+.preview.bad{background:var(--red-soft);border-color:transparent}
+.preview.warn{background:var(--amber-soft);border-color:transparent}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0 0 12px;font-size:.95rem}
+.kv dt{color:var(--ink-2)}
+.kv dd{margin:0;font-weight:600}
+.meter{height:10px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;margin:6px 0 4px}
+.meter i{display:block;height:100%;background:var(--teal)}
+.netlist{list-style:none;margin:8px 0;padding:0;display:grid;gap:4px}
+.netlist button{width:100%;display:flex;justify-content:space-between;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:8px 12px;cursor:pointer}
+.smart{display:grid;gap:10px}
+.smart .s{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+
+/* log */
+.loglist{list-style:none;margin:0;padding:0}
+.loglist .day{font-family:var(--fd);font-weight:600;color:var(--ink-2);padding:14px 0 4px}
+.loglist .e{display:grid;grid-template-columns:76px 12px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.loglist .e time{color:var(--ink-2);font-size:.88rem;font-variant-numeric:tabular-nums}
+.loglist .e i{width:10px;height:10px;border-radius:50%;display:block;transform:translateY(1px)}
+.cat-water i{background:var(--water)}.cat-alert i{background:var(--red)}.cat-wifi i{background:var(--teal)}.cat-device i{background:var(--amber)}
+
+/* service */
+.fwbox{display:grid;gap:10px}
+.prog{height:14px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--pink);transition:width .2s}
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:4px;font-size:.95rem}
+.steps li::before{content:"○ ";color:var(--ink-2)}
+.steps li.done::before{content:"● ";color:var(--green)}
+.steps li.now::before{content:"◐ ";color:var(--pink)}
+
+/* dock */
+.dock{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:25;background:var(--surface);border:2px dashed var(--pink);border-radius:18px;padding:8px 10px;display:flex;gap:8px;align-items:center;box-shadow:0 8px 30px rgba(10,40,45,.18);max-width:calc(100vw - 20px);overflow-x:auto;scrollbar-width:thin}
+.dock .lbl{font-family:var(--fd);font-weight:700;color:var(--pink);padding:0 4px;white-space:nowrap;line-height:1.1}
+.dock .lbl small{display:block;font-family:var(--fb);font-weight:500;color:var(--ink-2);font-size:.72rem}
+.dbtn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:7px 11px;font-weight:600;cursor:pointer;white-space:nowrap;font-size:.92rem}
+.dbtn svg{width:18px;height:18px;flex:none}
+.dbtn[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.dock .seg{flex-wrap:nowrap}
+.dock .seg button{padding:5px 8px}
+.clock{font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--ink-2);white-space:nowrap;text-align:right;line-height:1.2}
+.clock b{display:block;color:var(--ink);font-size:.95rem}
+
+/* modal & toast */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(6,26,29,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal[hidden]{display:none}
+.mbox{background:var(--surface);border-radius:18px;max-width:560px;width:100%;max-height:calc(100% - 24px);overflow:auto;padding:22px;position:relative}
+.mbox.wide{max-width:820px}
+.mclose{position:absolute;top:10px;right:10px;border:0;background:var(--surface-2);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:1.2rem}
+.mbox h2{margin:0 36px 10px 0}
+.mbox ul{padding-left:20px}
+.mbox li{margin-bottom:6px}
+.mascot-hero{display:flex;gap:16px;align-items:center;margin-bottom:6px}
+.mascot-hero svg{width:84px;height:100px;flex:none}
+.mascot-anim{animation:bob 2.4s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.err{color:var(--red);font-size:.92rem;min-height:1.3em;margin:4px 0}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;z-index:50;font-weight:500;max-width:min(92vw,520px);text-align:center;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px;text-align:center;color:var(--ink-2)}
+.empty svg{width:70px;height:84px}
+.report h3{margin:16px 0 6px}
+.report table{margin-bottom:6px}
+
+@media (max-width:860px){
+  .ov,.grid2{grid-template-columns:1fr}
+  .bignum .pct{font-size:4rem}
+  .f3{grid-template-columns:1fr 1fr}
+}
+@media (max-width:520px){
+  .top{position:static}
+  .bar{gap:8px}
+  .brand small{display:none}
+  .devpick{order:3;width:100%}
+  .inapp .conn{margin-right:auto}
+  .dock{gap:5px;padding:6px 8px}
+  .devpick select{max-width:none;width:100%}
+  .ledcols{height:190px}
+  .leds{padding:22px 0 26px}
+  .today{grid-template-columns:1fr 1fr}
+  .dock .lbl small{display:none}
+  .dbtn span{display:none}
+  .loglist .e{grid-template-columns:64px 12px 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .wave,.stream,.mascot-anim,.spin{animation:none}
+  .wl,.minibar i{transition:none}
+}
+@media print{
+  body{padding:0;background:#fff}
+  body.printing > *:not(.modal){display:none!important}
+  body.printing .modal{position:static;background:none;padding:0}
+  body.printing .mbox{max-height:none;box-shadow:none;padding:0}
+  body.printing .mclose,body.printing .noprint{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="demo-strip"><span><b>Demo</b> with sample data. No real tank is connected.</span>
+    <button class="linkbtn" id="tourBtn">How this demo works</button>
+    <button class="linkbtn" id="resetBtn">Reset demo</button>
+    <button class="cta" id="contactBtn" data-act="contact" hidden>Contact us</button></div>
+  <div class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 84 100" aria-hidden="true"><use href="#mascot"/></svg>
+      <div><b>Water Tanks Monitor</b><small>woodyouloveit.com</small></div>
+    </div>
+    <label class="devpick"><span class="sr">Tank</span><select id="devSel"></select></label>
+    <div class="conn" id="conn"><i></i><span>Online</span></div>
+    <button class="role" id="roleBtn">Sign in</button>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Dashboard sections">
+    <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+    <button role="tab" data-tab="analytics" aria-selected="false">Analytics</button>
+    <button role="tab" data-tab="setup" aria-selected="false">Setup</button>
+    <button role="tab" data-tab="log" aria-selected="false">Log</button>
+    <button role="tab" data-tab="service" aria-selected="false">Service <span class="lock" id="svcLock">🔒</span></button>
+  </nav>
+</header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mascot" viewBox="0 0 84 100">
+      <path d="M42 4C42 4 8 44 8 64a34 34 0 0 0 68 0C76 44 42 4 42 4Z" fill="#2FB3D6" stroke="#0B6F86" stroke-width="3"/>
+      <path d="M24 56c2-10 8-19 12-24" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>
+      <ellipse cx="31" cy="64" rx="5" ry="6.5" fill="#0D2B33"/><ellipse cx="53" cy="64" rx="5" ry="6.5" fill="#0D2B33"/>
+      <circle cx="33" cy="61.5" r="1.8" fill="#fff"/><circle cx="55" cy="61.5" r="1.8" fill="#fff"/>
+      <ellipse cx="22" cy="74" rx="5" ry="3" fill="#F07AA2" opacity=".75"/><ellipse cx="62" cy="74" rx="5" ry="3" fill="#F07AA2" opacity=".75"/>
+      <path d="M34 77q8 7 16 0" stroke="#0D2B33" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main>
+  <!-- OVERVIEW -->
+  <section class="tab" id="t-overview" role="tabpanel" aria-label="Overview">
+    <div class="ov">
+      <div class="card tankcard">
+        <div class="cap"><span id="tkSite">Site</span><span id="tkTime"></span></div>
+        <div class="tankwrap">
+          <svg id="tankSvg" viewBox="0 0 360 300" role="img" aria-label="Tank water level"></svg>
+          <div class="leds" id="leds" aria-label="LED strip preview"></div>
+        </div>
+        <div class="restart-ov" id="restartOv" hidden><div class="spin"></div><span>Device restarting…</span></div>
+      </div>
+      <div class="ovside">
+        <div>
+          <div class="bignum"><span class="pct" id="ovPct">--</span><span class="u">%</span></div>
+          <div class="litres" id="ovLitres"></div>
+        </div>
+        <div class="complist" id="ovComps"></div>
+        <div class="alerts" id="alerts" aria-live="polite"></div>
+        <div class="today" id="ovToday"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Tank at a glance</h2>
+      <dl class="glance" id="glance"></dl>
+      <ul class="warnlist" id="glanceWarn"></ul>
+    </div>
+  </section>
+
+  <!-- ANALYTICS -->
+  <section class="tab" id="t-analytics" role="tabpanel" aria-label="Analytics" hidden>
+    <div class="an-head">
+      <h2>Analytics</h2>
+      <div class="seg" id="anComp" aria-label="Compartment"></div>
+      <button class="btn" id="reportBtn">Water report</button>
+    </div>
+    <div class="tiles" id="tiles"></div>
+    <div class="card">
+      <div class="card-h"><h3>Level history</h3>
+        <div class="seg" id="rangeSeg">
+          <button data-r="1" aria-pressed="true">24 h</button><button data-r="3" aria-pressed="false">3 days</button><button data-r="7" aria-pressed="false">7 days</button><button data-r="14" aria-pressed="false">14 days</button>
+        </div></div>
+      <div class="chart" id="chLevel"></div>
+      <p class="legend" id="lvLegend"></p>
+    </div>
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="card"><h3>Motor run time per day</h3><div class="chart sm" id="chMotor"></div>
+        <h4 style="margin:14px 0 6px">Recent fills</h4><div class="tblwrap"><table id="fillsTbl"></table></div></div>
+      <div class="card"><h3>Water used per day</h3><div class="chart sm" id="chUsed"></div>
+        <p class="muted" style="margin:10px 0 0;font-size:.9rem">Every drop in level outside a fill, with a small dead band so sensor noise isn’t counted as use.</p></div>
+    </div>
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="card"><h3>Usage by hour of day</h3><div class="chart sm" id="chHour"></div>
+        <p class="muted" style="margin:10px 0 0;font-size:.9rem">Average use for each hour. The 3 busiest hours are highlighted.</p></div>
+      <div class="card"><h3>Night leak check</h3><p class="muted" id="nightInfo" style="margin:0 0 8px;font-size:.9rem"></p><div class="tblwrap"><table id="nightTbl"></table></div></div>
+    </div>
+    <div class="card" id="anSettings"></div>
+  </section>
+
+  <!-- SETUP -->
+  <section class="tab" id="t-setup" role="tabpanel" aria-label="Setup" hidden></section>
+
+  <!-- LOG -->
+  <section class="tab" id="t-log" role="tabpanel" aria-label="Log" hidden>
+    <div class="card">
+      <div class="card-h"><h2>Device log</h2>
+        <div class="seg" id="logSeg">
+          <button data-c="all" aria-pressed="true">All</button><button data-c="water" aria-pressed="false">Water</button><button data-c="alert" aria-pressed="false">Alerts</button><button data-c="wifi" aria-pressed="false">Wi-Fi</button><button data-c="device" aria-pressed="false">Device</button>
+        </div></div>
+      <p class="muted" style="margin:0 0 4px;font-size:.92rem">Every restart, Wi-Fi change, fill and alert is kept in the device’s flash, so it survives power cuts.</p>
+      <ul class="loglist" id="logList"></ul>
+    </div>
+  </section>
+
+  <!-- SERVICE -->
+  <section class="tab" id="t-service" role="tabpanel" aria-label="Service" hidden></section>
+</main>
+
+<!-- DEMO CONTROLS -->
+<div class="dock" id="dock" role="group" aria-label="Demo controls">
+  <div class="lbl">Try it<small>acts as the real tank</small></div>
+  <button class="dbtn" id="dMotor" aria-pressed="false" title="Switch the water pump motor on or off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/><path d="M12 5v4M12 15v4M5 12h4M15 12h4"/></svg><span>Motor</span></button>
+  <button class="dbtn" id="dTap" aria-pressed="false" title="Open a tap: heavy water use"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h9a3 3 0 0 1 3 3v2M13 8V5M10 5h6M16 17c0 1.5-1 3-1 3s-1-1.5-1-3a1 1 0 0 1 2 0Z"/></svg><span>Open a tap</span></button>
+  <button class="dbtn" id="dLeak" aria-pressed="false" title="Start a slow, steady leak"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11Z"/><path d="M12 11v4"/></svg><span>Leak</span></button>
+  <button class="dbtn" id="dFault" aria-pressed="false" title="Disconnect the ultrasonic sensor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 8a6 6 0 0 1 8 0M5 5a10 10 0 0 1 14 0M12 12v.01M4 20 20 4"/></svg><span>Sensor fault</span></button>
+  <div class="seg" id="speedSeg" aria-label="Simulation speed">
+    <button data-s="1" aria-pressed="false">1×</button><button data-s="60" aria-pressed="true">60×</button><button data-s="300" aria-pressed="false">300×</button><button data-s="1200" aria-pressed="false">1200×</button>
+  </div>
+  <div class="clock" id="clock"></div>
+</div>
+
+<div class="modal" id="modal" hidden><div class="mbox" id="mbox" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+const NATIVE=window.WTMSDemo||null;
+if(NATIVE)document.documentElement.classList.add('inapp');
+const MIN=60000,HOUR=3600000,DAY=86400000;
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nf=new Intl.NumberFormat('en-IN');
+const fL=l=>nf.format(Math.round(l))+' L';
+const fT=t=>new Date(t).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'});
+const fD=t=>new Date(t).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+const fDur=m=>{m=Math.round(m);if(m<60)return m+' min';if(m>=2880){const d=Math.floor(m/1440),h=Math.floor(m%1440/60);return d+' days'+(h?' '+h+' h':'')}const h=Math.floor(m/60),r=m%60;return h+' h'+(r?' '+r+' min':'')};
+const fAgo=ms=>ms<2*MIN?'just now':fDur(ms/MIN)+' ago';
+const dayStart=t=>{const d=new Date(t);d.setHours(0,0,0,0);return +d};
+const median=a=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+const lowerBound=(a,v)=>{let lo=0,hi=a.length;while(lo<hi){const m=(lo+hi)>>1;if(a[m]<v)lo=m+1;else hi=m}return lo};
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const hash=s=>[...s].reduce((a,c)=>(a*31+c.charCodeAt(0))|0,7);
+
+const PROF={
+  Domestic:[.05,.05,.05,.05,.06,1.4,2.6,3,2.6,1.8,1.3,1.1,1.2,1,.8,.8,1,1.4,2,2.3,1.9,1.3,.7,.25],
+  Commercial:[.02,.02,.02,.02,.04,1.1,2.4,3,2.8,2,1.4,1.2,1.3,1.1,.9,.9,1.1,1.6,2.2,2.5,2.1,1.4,.6,.15]};
+const PSUM={};for(const k in PROF)PSUM[k]=PROF[k].reduce((a,b)=>a+b,0);
+const RECO={Domestic:{nightStart:1,nightEnd:5,leak:1.5,low:25},Commercial:{nightStart:2,nightEnd:5,leak:2.5,low:30}};
+const LOW_BY_LOC={'Underground sump':20};
+const PRESETS=[{cap:150,L:710,W:710,H:400},{cap:225,L:1035,W:725,H:385},{cap:270,L:1100,W:735,H:425},{cap:400,L:1120,W:875,H:420},{cap:500,L:1450,W:915,H:445},{cap:1000,L:1650,W:1080,H:685}];
+const DEF_SET={brightness:150,low:25,dir:'up',color:'gradient',leds:30,strips:1,zigzag:false,trig:20,fillThr:.5,nightStart:1,nightEnd:5,leak:1.5};
+
+function baseDevices(){return[
+{id:'wing-a',name:'Wing A overhead tank',board:'ESP32 DevKit',fw:'3.4.0',ip:'192.168.0.118',host:'wing-a-tank.local',mac:'24:6F:28:9C:41:E0',serial:'WTMS-32-2611',made:'Aug 2026',heap:'184 KB',flashKB:1408,
+ wifi:{ssid:'GreenValley-Office',rssi:-64,on:true},usage:'Commercial',location:'Overhead (roof)',shape:'rect',dims:{L:3200,W:2600,H:1600,D:0},depthMm:1400,preset:'custom',
+ site:{org:'Green Valley CHS',building:'Wing A',tank:'Overhead tank'},pumpLpm:260,fillTimes:[[5,30],[11,30],[17,0]],
+ nightLeaks:[{ago:0,comp:1,lph:40},{ago:5,comp:0,lph:36}],nightDrops:[{ago:3,comp:1,h:3,m:20,L:80}],
+ comps:[{name:'Compartment 1',cap:5000,depth:140,fullDist:32,share:.5,dailyUse:7000},{name:'Compartment 2',cap:5000,depth:140,fullDist:32,share:.5,dailyUse:6400}],
+ set:{brightness:170,low:30,nightStart:2,nightEnd:5,leak:2.5},selfHeal:1},
+{id:'home',name:'Home loft tank',board:'ESP8266 NodeMCU',fw:'3.4.0',ip:'192.168.1.42',host:'yucca-tank.local',mac:'5C:CF:7F:A1:3B:42',serial:'WTMS-8266-0142',made:'Jul 2026',heap:'27 KB',flashKB:1024,
+ wifi:{ssid:'Home_WiFi',rssi:-58,on:true},usage:'Domestic',location:'Loft / bathroom',shape:'rect',dims:{L:1450,W:915,H:445,D:0},depthMm:405,preset:'500',
+ site:{org:'Flat 304, Green Valley CHS',building:'Wing B',tank:'Loft tank'},pumpLpm:22,fillTimes:[[6,15],[19,0]],
+ nightLeaks:[{ago:4,comp:0,lph:8}],nightDrops:[{ago:2,comp:0,h:2,m:40,L:22}],
+ comps:[{name:'Tank',cap:500,depth:40.5,fullDist:27,share:1,dailyUse:520,cal:{full:28.4,empty:67.5}}],
+ set:{brightness:120,low:25,color:'status'},selfHeal:0},
+{id:'sump',name:'Underground sump',board:'ESP32 DevKit',fw:'3.4.0',ip:'192.168.0.121',host:'sump-tank.local',mac:'24:6F:28:9C:52:1A',serial:'WTMS-32-2614',made:'Aug 2026',heap:'191 KB',flashKB:1408,
+ wifi:{ssid:'GreenValley-Office',rssi:-71,on:true},usage:'Commercial',location:'Underground sump',shape:'rect',dims:{L:5000,W:4000,H:2200,D:0},depthMm:1900,preset:'custom',
+ site:{org:'Green Valley CHS',building:'Common area',tank:'Underground sump'},pumpLpm:420,fillTimes:[[5,30],[14,0]],
+ nightLeaks:[],nightDrops:[{ago:1,comp:0,h:3,m:5,L:700}],
+ comps:[{name:'Sump',cap:40000,depth:190,fullDist:38,share:1,dailyUse:30000}],
+ set:{brightness:200,low:20,color:'blue',nightStart:2,nightEnd:5,leak:2.5},selfHeal:0}
+]}
+
+const state={role:'viewer',speed:60,simNow:Date.now(),tab:'overview',devIdx:0,anComp:0,range:1,logCat:'all',calComp:0,calMethod:'level',calPending:null,svcBusy:false,restartUntil:0,anCache:{}};
+let DEVS=[];
+const D=()=>DEVS[state.devIdx];
+
+/* ---------- simulation ---------- */
+function initDev(dev,now){
+  dev.settings=Object.assign({},DEF_SET,dev.set||{});
+  dev.comps.forEach(c=>{c.cal=c.cal?{...c.cal}:{full:c.fullDist,empty:c.fullDist+c.depth};c.ht=[];c.hd=[];c.read=null});
+  dev.rand=rng(hash(dev.id)+dev.comps.length*101);
+  dev.st={motor:false,manual:false,fullAt:0,late:0,fill:null,tap:false,leak:false,fault:false,faultSince:0,healed:false,lastRec:0,done:new Set(),low:dev.comps.map(()=>false),nightDone:new Set(),bootAt:now-6*DAY-3*HOUR};
+  dev.fills=[];dev.log=[];dev.restarts=4+(dev.selfHeal||0);
+  dev.dayRef=dayStart(now);
+  const start=Math.floor((now-14*DAY)/(2*MIN))*2*MIN;
+  dev.comps.forEach((c,i)=>c.litres=c.cap*(.62-.08*i));
+  for(let t=start;t<=now;t+=MIN)step(dev,t,1,false);
+  dev.lastT=now;
+  seedLogs(dev,now);
+  // night results already in history
+  for(let a=7;a>=0;a--){const ds=dev.dayRef-a*DAY;const we=ds+dev.settings.nightEnd*HOUR;if(we<=now)nightLog(dev,ds,we)}
+  dev.log.sort((a,b)=>a.t-b.t);
+}
+function addLog(dev,t,cat,msg){dev.log.push({t,cat,msg});if(dev.log.length>600)dev.log.splice(0,dev.log.length-600)}
+function seedLogs(dev,now){
+  const ds=dev.dayRef;
+  const L=(d,h,m,cat,msg)=>addLog(dev,ds-d*DAY+h*HOUR+m*MIN,cat,msg);
+  L(13,10,12,'device','Power restored. Device started, firmware 3.3.2');
+  L(13,10,12,'wifi','Connected to '+dev.wifi.ssid+' ('+(dev.wifi.rssi-2)+' dBm)');
+  L(13,10,13,'wifi','Clock synced from the internet');
+  L(9,14,5,'device','Firmware updated to 3.4.0 over Wi-Fi by Service. Settings and history kept');
+  L(9,14,6,'wifi','Connected to '+dev.wifi.ssid+' ('+dev.wifi.rssi+' dBm)');
+  if(dev.selfHeal){L(6,3,41,'device','Self-healing restart: sensor on '+dev.comps[0].name+' did not answer for 60 s');L(6,3,42,'device','Sensor readings back to normal')}
+  L(2,22,10,'wifi','Wi-Fi lost. Retrying');
+  L(2,22,13,'wifi','Wi-Fi reconnected ('+dev.wifi.rssi+' dBm)');
+}
+function motorOn(dev,t,manual){
+  const S=dev.st;S.motor=true;S.manual=manual;S.fullAt=0;
+  S.late=manual?0:(dev.rand()<.3?3+dev.rand()*12:dev.rand()*1.5);
+  S.fill={start:t,startL:dev.comps.map(c=>c.litres)};
+  addLog(dev,t,'water','Filling started');
+}
+function closeFill(dev,t,full){
+  const S=dev.st,f=S.fill;if(!f)return;S.fill=null;
+  const rise=dev.comps.map((c,i)=>Math.max(0,c.litres-f.startL[i]));
+  const dur=(t-f.start)/MIN;
+  const riseCm=Math.max(...dev.comps.map((c,i)=>rise[i]/(c.cap/c.depth)));
+  if(dur<3||riseCm<3){return}
+  dev.fills.push({start:f.start,end:t,rise,full});
+  addLog(dev,t,'water','Filling stopped'+(full?' at full':'')+': +'+fL(rise.reduce((a,b)=>a+b,0))+' in '+fDur(dur));
+}
+function motorOff(dev,t){const S=dev.st;S.motor=false;S.manual=false;if(S.fill)closeFill(dev,t,false);S.fullAt=0}
+function trueDist(c){return c.fullDist+(1-c.litres/c.cap)*c.depth}
+function step(dev,t,dm,live){
+  const S=dev.st,R=live?Math.random:dev.rand,d=new Date(t),h=d.getHours(),mi=d.getMinutes(),dk=dayStart(t);
+  dev.fillTimes.forEach(([fh,fm],i)=>{const st=dk+fh*HOUR+fm*MIN,k=dk+':'+i;
+    if(t>=st&&t<st+30*MIN&&!S.done.has(k)){S.done.add(k);if(!S.motor&&dev.comps.some(c=>c.litres<c.cap*.85))motorOn(dev,t,false)}});
+  if(!S.motor&&dev.comps.some(c=>c.litres<c.cap*.1))motorOn(dev,t,false);
+  const w=PROF[dev.usage][h]/PSUM[dev.usage],ago=Math.round((dev.dayRef-dk)/DAY);
+  const open=dev.comps.filter(c=>c.litres<c.cap*.999),ss=open.reduce((a,c)=>a+c.share,0);
+  dev.comps.forEach((c,i)=>{
+    let use=c.dailyUse*w/60*dm*(.35+1.3*R());
+    for(const n of dev.nightLeaks)if(n.ago===ago&&n.comp===i&&h<6)use+=n.lph/60*dm;
+    for(const n of dev.nightDrops)if(n.ago===ago&&n.comp===i&&h===n.h&&mi>=n.m&&mi<n.m+5)use+=n.L/5*dm;
+    if(live&&S.tap&&i===0)use+=c.cap*.02*dm;
+    if(live&&S.leak&&i===dev.comps.length-1)use+=c.cap*.0016*dm;
+    let inflow=0;if(S.motor&&ss>0&&c.litres<c.cap*.999)inflow=dev.pumpLpm*c.share/ss*dm;
+    c.litres=clamp(c.litres+inflow-use,0,c.cap);c.flow=(inflow-use)/dm;
+  });
+  if(S.motor){
+    if(dev.comps.every(c=>c.litres>=c.cap*.995)){
+      if(!S.fullAt){S.fullAt=t;closeFill(dev,t,true)}
+      if(!S.manual&&t-S.fullAt>=S.late*MIN)motorOff(dev,t);
+    }
+  }
+  if(t-S.lastRec>=2*MIN){S.lastRec=t;
+    dev.comps.forEach((c,i)=>{if(S.fault&&i===0)return;c.ht.push(t);c.hd.push(trueDist(c)+(R()-.5)*.3)});}
+  dev.comps.forEach((c,i)=>{const p=c.litres/c.cap*100;
+    if(p<dev.settings.low&&!S.low[i]){S.low[i]=true;addLog(dev,t,'alert','Low water in '+c.name+' ('+Math.round(p)+'%)')}
+    else if(p>dev.settings.low+5)S.low[i]=false});
+  if(live&&S.fault){if(!S.faultSince)S.faultSince=t;
+    if(!S.healed&&t-S.faultSince>30*MIN){S.healed=true;dev.restarts++;dev.st.bootAt=t;addLog(dev,t,'device','Self-healing restart: sensor on '+dev.comps[0].name+' did not answer for 30 min')}}
+  if(live){const ne=dk+dev.settings.nightEnd*HOUR;if(t>=ne&&t-dm*MIN<ne)nightLog(dev,dk,ne)}
+}
+function nightLog(dev,ds,we){
+  if(dev.st.nightDone.has(ds))return;dev.st.nightDone.add(ds);
+  dev.comps.forEach((c,i)=>{const r=nightCheck(dev,i,ds);if(!r)return;
+    if(r.cls==='leak')addLog(dev,we+MIN,'alert','Night leak check: possible leak in '+c.name+' (level fell '+r.cm.toFixed(1)+' cm slowly)');
+    else if(r.cls==='drop')addLog(dev,we+MIN,'water','Night check: one drop of '+r.cm.toFixed(1)+' cm in '+c.name+' (water used, not a leak)')});
+}
+
+/* ---------- readings & analytics ---------- */
+const lpcm=c=>c.cap/(c.cal.empty-c.cal.full);
+const pctOf=(c,dist)=>clamp((c.cal.empty-dist)/(c.cal.empty-c.cal.full)*100,0,100);
+function liveRead(dev){dev.comps.forEach((c,i)=>{if(dev.st.fault&&i===0){c.read=null;return}
+  const r=trueDist(c)+(Math.random()-.5)*.12;c.read=c.read==null?r:c.read*.6+r*.4})}
+const dispPct=(dev,i)=>{const c=dev.comps[i];return c.read==null?null:pctOf(c,c.read)};
+function fillsWithCurrent(dev){const f=dev.fills.slice();if(dev.st.fill)f.push({start:dev.st.fill.start,end:state.simNow,rise:dev.comps.map((c,i)=>Math.max(0,c.litres-dev.st.fill.startL[i])),cur:true});return f}
+
+function nightCheck(dev,ci,ds){
+  const c=dev.comps[ci],s=dev.settings,ws=ds+s.nightStart*HOUR,we=ds+s.nightEnd*HOUR;
+  if(!c.ht.length||ws<c.ht[0])return null;
+  for(const f of fillsWithCurrent(dev))if(f.start<we&&f.end>ws)return{ds,cls:'na',label:'Filled during check',cm:0,maxH:0};
+  const i0=lowerBound(c.ht,ws),i1=lowerBound(c.ht,we+1);
+  if(i1-i0<10)return{ds,cls:'na',label:'Not enough data',cm:0,maxH:0};
+  const w=[];for(let i=i0;i<i1;i++)w.push(c.cal.empty-c.hd[i]);
+  const sm=w.map((v,i)=>(w[Math.max(0,i-1)]+v+w[Math.min(w.length-1,i+1)])/3);
+  const cm=(sm[0]+sm[1]+sm[2])/3-(sm[sm.length-1]+sm[sm.length-2]+sm[sm.length-3])/3;
+  let maxH=0,j=0;const ts=c.ht.slice(i0,i1);
+  for(let i=0;i<sm.length;i++){while(j<sm.length-1&&ts[j+1]<=ts[i]+HOUR)j++;maxH=Math.max(maxH,sm[i]-sm[j])}
+  let cls='ok',label='OK';
+  if(cm>s.leak){if(maxH>=.6*cm){cls='drop';label='Water used (one drop)'}else{cls='leak';label='Possible leak'}}
+  else if(cm>s.leak/2){cls='watch';label='Watch'}
+  return{ds,cls,label,cm,maxH,L:cm*lpcm(c)};
+}
+function analyze(dev,ci){
+  const key=dev.id+':'+ci,cached=state.anCache[key];
+  if(cached&&performance.now()-cached.at<2500)return cached.v;
+  const c=dev.comps[ci],s=dev.settings,now=state.simNow,ht=c.ht,hd=c.hd,lpc=lpcm(c);
+  const fills=fillsWithCurrent(dev),fi=fills.map(f=>[f.start-4*MIN,f.end+4*MIN]);
+  const byDay=new Map(),byHour=new Array(24).fill(0);let ref=null,k=0;const db=.3;
+  for(let i=0;i<ht.length;i++){const t=ht[i],w=c.cal.empty-hd[i];while(k<fi.length&&fi[k][1]<t)k++;const inF=k<fi.length&&fi[k][0]<=t;
+    if(ref===null||inF){ref=w;continue}if(w>ref+db){ref=w;continue}
+    if(w<ref-db){const u=(ref-w)*lpc;ref=w;const d0=dayStart(t);byDay.set(d0,(byDay.get(d0)||0)+u);byHour[new Date(t).getHours()]+=u}}
+  const nDays=ht.length?Math.max(1,(now-ht[0])/DAY):1;const hourAvg=byHour.map(v=>v/nDays);
+  const today=dayStart(now),days=[];
+  for(let d=6;d>=0;d--){const ds=today-d*DAY,de=ds+DAY;let mot=0,n=0;
+    for(const f of fills){const a=Math.max(f.start,ds),b=Math.min(f.end,de);if(b>a){mot+=(b-a)/MIN;if(f.start>=ds)n++}}
+    days.push({ds,used:byDay.get(ds)||0,motor:mot,fills:n})}
+  let endDay=today;if(now<today+s.nightEnd*HOUR)endDay-=DAY;
+  const nights=[];for(let d=0;d<7;d++){const r=nightCheck(dev,ci,endDay-d*DAY);if(r)nights.push(r)}
+  const full=fills.filter(f=>!f.cur&&f.rise[ci]>0);let rc=0,rm=0;
+  full.forEach(f=>{rc+=f.rise[ci]/lpc;rm+=(f.end-f.start)/MIN});
+  const rate=rm?rc/rm:0,e2f=rate?(c.cal.empty-c.cal.full)/rate:0;
+  let bh=0;hourAvg.forEach((v,i)=>{if(v>hourAvg[bh])bh=i});
+  const top3=hourAvg.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).slice(0,3).map(x=>x[1]);
+  const v={days,hourAvg,top3,bh,nights,fills,lastFill:dev.fills.filter(f=>f.rise[ci]>0).slice(-1)[0],e2f,rate,usedToday:byDay.get(today)||0,motorToday:days[6].motor,fillsToday:days[6].fills};
+  state.anCache[key]={at:performance.now(),v};return v;
+}
+function learnFull(dev,ci){
+  const c=dev.comps[ci],vals=[];
+  for(const f of dev.fills){if(!f.full)continue;const i0=lowerBound(c.ht,f.end),a=[];
+    for(let i=i0;i<c.ht.length&&c.ht[i]<=f.end+4*MIN;i++)a.push(c.hd[i]);if(a.length>=2)vals.push(Math.min(...a))}
+  if(vals.length<3)return null;return{full:median(vals),n:vals.length};
+}
+
+/* ---------- tank graphic ---------- */
+const TK={X:46,Y:52,W:268,H:212,in:6,wall:8};
+function buildTank(){
+  const dev=D(),n=dev.comps.length,svg=$('#tankSvg'),{X,Y,W,H}=TK,iw=W-TK.in*2,cw=(iw-(n-1)*TK.wall)/n,top=Y+TK.in,ih=H-TK.in*2;
+  let s=`<defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:#4CC6E6"/><stop offset="1" style="stop-color:#0F5F8C"/></linearGradient>
+  <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="8" fill="rgba(255,255,255,.12)"/></pattern>`;
+  dev.comps.forEach((c,i)=>{const x0=X+TK.in+i*(cw+TK.wall);s+=`<clipPath id="cp${i}"><rect x="${x0}" y="${top}" width="${cw}" height="${ih}" rx="${n===1?10:6}"/></clipPath>`});
+  s+=`</defs>`;
+  s+=`<rect x="${X-6}" y="${Y-12}" width="${W+12}" height="14" rx="5" fill="rgba(255,255,255,.18)"/>`;
+  s+=`<rect x="${X}" y="${Y}" width="${W}" height="${H}" rx="16" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.38)" stroke-width="3"/>`;
+  s+=`<path d="M8 ${Y+18} H${X+14}" stroke="rgba(255,255,255,.45)" stroke-width="8" stroke-linecap="round"/>`;
+  dev.comps.forEach((c,i)=>{
+    const x0=X+TK.in+i*(cw+TK.wall),sx=x0-40;let p=`M${sx} 0`;for(let k=0;k<Math.ceil((cw+80)/40)+1;k++)p+=k?' t20 0 t20 0':' q10 -5 20 0 t20 0';p+=` V400 H${sx} Z`;
+    let p2=`M${sx} 3`;for(let k=0;k<Math.ceil((cw+80)/40)+1;k++)p2+=k?' t20 0 t20 0':' q10 5 20 0 t20 0';p2+=` V400 H${sx} Z`;
+    if(i>0)s+=`<rect x="${x0-TK.wall}" y="${Y}" width="${TK.wall}" height="${H}" fill="rgba(255,255,255,.3)"/>`;
+    s+=`<g clip-path="url(#cp${i})"><g class="wl" id="wl${i}" style="transform:translateY(${top+ih}px)"><path class="wave b" d="${p2}" fill="#7FD8F0"/><path class="wave" d="${p}" fill="url(#wg)"/></g>
+      <rect id="hz${i}" x="${x0}" y="${top}" width="${cw}" height="${ih}" fill="url(#hatch)" visibility="hidden"/></g>`;
+    const cx=x0+cw/2;
+    s+=`<rect x="${cx-13}" y="${Y-22}" width="26" height="12" rx="3" fill="#E8F6F5"/><circle cx="${cx-5}" cy="${Y-16}" r="3" fill="#0C3236"/><circle cx="${cx+5}" cy="${Y-16}" r="3" fill="#0C3236"/>`;
+    s+=`<line id="bm${i}" x1="${cx}" y1="${Y-9}" x2="${cx}" y2="${top}" stroke="#F0699A" stroke-width="1.5" stroke-dasharray="2 5" opacity=".8"/>`;
+    s+=`<line id="st${i}" class="stream" x1="${x0+10}" y1="${Y+22}" x2="${x0+10}" y2="${top+ih}" stroke="#9BE3F5" stroke-width="5" stroke-linecap="round" visibility="hidden"/>`;
+    s+=`<line id="lo${i}" x1="${x0+2}" x2="${x0+cw-2}" y1="0" y2="0" stroke="#F0B44A" stroke-width="1.5" stroke-dasharray="6 4"/>`;
+    s+=`<text id="tp${i}" x="${cx}" y="${top+ih/2+10}" text-anchor="middle" font-size="${n>2?22:30}" font-weight="800" fill="#fff" stroke="rgba(5,30,35,.55)" stroke-width="4" paint-order="stroke">--</text>`;
+    s+=`<text x="${cx}" y="${Y+H+20}" text-anchor="middle" font-size="13" fill="#9CC3C4">${esc(c.name)}</text>`;
+  });
+  s+=`<text x="${X+W+6}" y="${Y+10}" font-size="10" fill="#9CC3C4">full</text>`;
+  svg.innerHTML=s;
+  buildLeds();
+}
+function updTank(){
+  const dev=D(),S=dev.st,n=dev.comps.length,{X,Y,W,H}=TK,top=Y+TK.in,ih=H-TK.in*2,iw=W-TK.in*2,cw=(iw-(n-1)*TK.wall)/n;
+  dev.comps.forEach((c,i)=>{const p=dispPct(dev,i),y=top+ih*(1-(p==null?pctOf(c,c.hd[c.hd.length-1]||c.cal.empty):p)/100);
+    const g=$('#wl'+i);if(!g)return;g.style.transform=`translateY(${y}px)`;
+    $('#hz'+i).setAttribute('visibility',p==null?'visible':'hidden');
+    $('#tp'+i).textContent=p==null?'No reading':Math.round(p)+'%';$('#tp'+i).setAttribute('font-size',p==null?16:(n>2?22:30));
+    $('#bm'+i).setAttribute('y2',p==null?top+20:y);$('#bm'+i).setAttribute('visibility',p==null?'hidden':'visible');
+    const fl=S.fill&&!(S.fault&&i===0)&&c.flow>0;const st=$('#st'+i);st.setAttribute('visibility',fl?'visible':'hidden');st.setAttribute('y2',y);
+    const ly=top+ih*(1-dev.settings.low/100);$('#lo'+i).setAttribute('y1',ly);$('#lo'+i).setAttribute('y2',ly)});
+}
+function buildLeds(){
+  const dev=D(),s=dev.settings,box=$('#leds');let h='';
+  dev.comps.forEach((c,i)=>{h+=`<div class="ledgrp"><span class="din">${s.dir==='up'?'':'IN'}</span><div class="ledcols">`;
+    for(let k=0;k<s.strips;k++){h+=`<div class="strip" data-strip="${i}">`;for(let j=0;j<s.leds;j++)h+=`<i class="led"></i>`;h+=`</div>`}
+    h+=`</div><span class="din">${s.dir==='up'?'IN':''}</span><small>${dev.comps.length>1?'C'+(i+1):'LEDs'}</small></div>`});
+  box.innerHTML=h;
+}
+function ledColor(mode,pos,p,low){
+  if(mode==='gradient')return`hsl(${Math.round(pos*125)} 88% 52%)`;
+  if(mode==='blue')return'#2F9BFF';
+  return p<low?'#FF3B30':p<50?'#FFB020':'#22C55E';
+}
+function updLeds(){
+  const dev=D(),s=dev.settings,N=s.leds,blink=Math.floor(performance.now()/450)%2,chase=Math.floor(performance.now()/90),off=state.restartUntil>performance.now();
+  const op=.3+.7*s.brightness/255;
+  $$('#leds .strip').forEach(strip=>{const i=+strip.dataset.strip,p=dispPct(dev,i),lit=p==null?0:Math.round(p/100*N),leds=strip.children,filling=dev.st.fill&&dev.comps[i].flow>0;
+    for(let j=0;j<N;j++){let col=null;
+      if(off)col=null;
+      else if(p==null)col=(j%2===blink)?'#FF3B30':null;
+      else if(j<lit){col=ledColor(s.color,j/(N-1),p,s.low);if(p<s.low&&!blink)col=null;if(filling&&j===chase%Math.max(1,lit))col='#FFFFFF'}
+      const el=leds[j];el.style.backgroundColor=col||'';el.style.opacity=col?op:'';el.style.boxShadow=col?`0 0 ${4+6*s.brightness/255}px ${col}`:''}})
+}
+
+/* ---------- overview ---------- */
+function overallPct(dev){let l=0,cap=0;dev.comps.forEach((c,i)=>{const p=dispPct(dev,i);if(p!=null){l+=p/100*c.cap;cap+=c.cap}});return cap?{pct:l/cap*100,l,cap}:null}
+function renderOverview(){
+  const dev=D(),S=dev.st,s=dev.settings,o=overallPct(dev),totalCap=dev.comps.reduce((a,c)=>a+c.cap,0);
+  $('#tkSite').textContent=dev.site.org+', '+dev.site.building;
+  $('#tkTime').textContent=fT(state.simNow);
+  $('#ovPct').textContent=o?Math.round(o.pct):'--';
+  const miss=dev.comps.filter((c,i)=>dispPct(dev,i)==null).map(c=>c.name);
+  $('#ovLitres').textContent=!o?'Waiting for a reading':miss.length?fL(o.l)+' of '+fL(o.cap)+' measured. '+miss.join(', ')+' has no reading.':fL(o.l)+' of '+fL(totalCap);
+  const cl=$('#ovComps');
+  if(dev.comps.length>1){cl.innerHTML=dev.comps.map((c,i)=>{const p=dispPct(dev,i);return`<div class="comprow"><span>${esc(c.name)}</span><span class="minibar"><i style="width:${p==null?0:p}%"></i></span><b>${p==null?'—':Math.round(p)+'%, '+fL(p/100*c.cap)}</b></div>`}).join('');cl.hidden=false}else cl.hidden=true;
+  // alerts
+  const A=[];
+  if(state.restartUntil>performance.now())A.push(['info','Device restarting','The dashboard reconnects on its own in a few seconds.']);
+  if(S.fault)A.push(['bad','Sensor not responding on '+dev.comps[0].name,'No echo from the ultrasonic sensor. Check the cable and wipe the sensor face. The LEDs blink red until readings return.']);
+  dev.comps.forEach((c,i)=>{if(S.fill&&!(S.fault&&i===0)&&c.flow>0){const rate=c.flow/lpcm(c),left=(c.cap-c.litres)/Math.max(.1,c.flow);
+    A.push(['info','Filling'+(dev.comps.length>1?' '+c.name:''),'Rising '+rate.toFixed(1)+' cm/min. Full in about '+fDur(left)+'.'])}});
+  const lf=dev.fills[dev.fills.length-1];
+  if(lf&&lf.full&&state.simNow-lf.end<20*MIN&&o&&o.pct>97)A.push(['pink','Tank full at '+fT(lf.end),'Filling has stopped. Switch the motor off now if it’s still running: an overflowing tank wastes the water and the electricity used to pump it.']);
+  dev.comps.forEach((c,i)=>{const p=dispPct(dev,i);if(p!=null&&p<s.low)A.push(['warn','Low water'+(dev.comps.length>1?' in '+c.name:''),Math.round(p)+'% left, below the '+s.low+'% alarm. Start the motor or check the supply.'])});
+  dev.comps.forEach((c,i)=>{const an=analyze(dev,i),ln=an.nights[0];if(ln&&ln.cls==='leak')A.push(['warn','Possible leak last night'+(dev.comps.length>1?' in '+c.name:''),'The level fell '+ln.cm.toFixed(1)+' cm (about '+fL(ln.L)+') slowly between '+pad(s.nightStart)+':00 and '+pad(s.nightEnd)+':00 with no fill. Check the float valve, taps and flush tanks.'])});
+  if(!A.length)A.push(['ok','All normal','Levels are steady and the sensor is reading well.']);
+  $('#alerts').innerHTML=A.map(a=>`<div class="alert ${a[0]}"><b>${esc(a[1])}</b>${esc(a[2])}</div>`).join('');
+  const an=analyze(dev,0),RK={na:0,ok:1,watch:2,drop:3,leak:4};let ln=null;
+  dev.comps.forEach((c,i)=>{const n=analyze(dev,i).nights[0];if(n&&(!ln||RK[n.cls]>RK[ln.cls]))ln=n});
+  $('#ovToday').innerHTML=[
+    ['Motor today',fDur(dev.comps.length?an.motorToday:0)],
+    ['Used today',fL(dev.comps.reduce((a,c,i)=>a+analyze(dev,i).usedToday,0))],
+    ['Last fill',an.lastFill?fAgo(state.simNow-an.lastFill.end):'None yet'],
+    ['Last night',ln?ln.label:'No check yet']].map(x=>`<a href="#analytics" data-go="analytics"><span>${x[0]}</span><b>${esc(x[1])}</b></a>`).join('');
+}
+const pad=n=>String(n).padStart(2,'0');
+function renderGlance(){
+  const dev=D(),c0=dev.comps[0],o=overallPct(dev),cap=dev.comps.reduce((a,c)=>a+c.cap,0),d=dev.dims;
+  const size=dev.shape==='rect'?`${d.L} × ${d.W} × ${d.H} mm`:`Ø ${d.D} × ${d.H} mm`;
+  const items=[['Water now',o?fL(o.l):'—'],['Space left',o?fL(cap-o.l):'—'],['Capacity',fL(cap)+(dev.comps.length>1?' ('+dev.comps.length+' × '+fL(c0.cap)+')':'')],
+    ['Site',dev.site.org],['Building and tank',dev.site.building+', '+dev.site.tank],['Usage',dev.usage],['Tank location',dev.location],['Tank size',size],
+    ['Water depth when full',dev.depthMm+' mm'],['Calibrated range',dev.comps.map(c=>c.cal.full.toFixed(1)+'–'+c.cal.empty.toFixed(1)+' cm').join(', ')],
+    ['Litres per cm',dev.comps.map(c=>lpcm(c).toFixed(1)).join(', ')],['Sensors',dev.comps.length+' ultrasonic']];
+  $('#glance').innerHTML=items.map(x=>`<div><dt>${x[0]}</dt><dd>${esc(x[1])}</dd></div>`).join('');
+  const W=[];dev.comps.forEach(c=>{
+    if(c.cal.full<25)W.push(c.name+': the full line ('+c.cal.full.toFixed(1)+' cm) is inside the sensor’s 25 cm blind zone. Readings near full may jump.');
+    const span=(c.cal.empty-c.cal.full)*10;if(Math.abs(span-dev.depthMm)>50)W.push(c.name+': calibration covers '+Math.round(span)+' mm, but the tank’s water depth is set to '+dev.depthMm+' mm. Re-check the calibration.')});
+  $('#glanceWarn').innerHTML=W.map(w=>`<li>${esc(w)}</li>`).join('');
+}
+
+/* ---------- charts ---------- */
+function xTicks(t0,t1){const span=t1-t0,out=[];let stepH=span<=1.6*DAY?4:span<=4*DAY?12:24;
+  let t=dayStart(t0);while(t<t0)t+=stepH*HOUR;for(;t<=t1;t+=stepH*HOUR)out.push(t);return{ticks:out,daily:stepH>=24,stepH}}
+function lineChart(host,o){
+  const W=Math.max(280,host.clientWidth),H=host.classList.contains('sm')?180:240,pl=36,pr=10,pt=10,pb=26;
+  const X=t=>pl+(t-o.t0)/(o.t1-o.t0)*(W-pl-pr),Y=v=>pt+(1-v/100)*(H-pt-pb);
+  let s=`<svg width="${W}" height="${H}" role="img" aria-label="${esc(o.aria)}">`;
+  (o.bands||[]).forEach(b=>{const a=Math.max(b[0],o.t0),e=Math.min(b[1],o.t1);if(e>a)s+=`<rect class="band-${b[2]}" x="${X(a)}" y="${pt}" width="${Math.max(1,X(e)-X(a))}" height="${H-pt-pb}"/>`});
+  [0,25,50,75,100].forEach(v=>{s+=`<line class="gridl" x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${pl-6}" y="${Y(v)+4}" text-anchor="end">${v}%</text>`});
+  const xt=xTicks(o.t0,o.t1),every=Math.ceil(xt.ticks.length/Math.max(2,Math.floor(W/80)));
+  xt.ticks.forEach((t,i)=>{if(i%every)return;const d=new Date(t);const lab=xt.daily||d.getHours()===0?d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}):d.toLocaleTimeString('en-IN',{hour:'numeric'});
+    s+=`<text x="${X(t)}" y="${H-6}" text-anchor="middle">${lab}</text>`});
+  o.series.forEach(se=>{const i0=lowerBound(se.ts,o.t0),i1=lowerBound(se.ts,o.t1+1),cnt=i1-i0,k=Math.max(1,Math.floor(cnt/(W-pl-pr)));
+    let d='',prev=0;for(let i=i0;i<i1;i+=k){const t=se.ts[i];d+=(d&&t-prev<12*MIN*k?'L':'M')+X(t).toFixed(1)+' '+Y(se.vs(i)).toFixed(1);prev=t}
+    s+=`<path d="${d}" fill="none" stroke="${se.color}" stroke-width="2" stroke-linejoin="round"/>`});
+  s+=`<line id="hvl" x1="0" x2="0" y1="${pt}" y2="${H-pb}" stroke="var(--ink-2)" stroke-dasharray="3 3" visibility="hidden"/>`;
+  o.series.forEach((se,i)=>s+=`<circle class="hvd" data-i="${i}" r="4" fill="${se.color}" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>`);
+  s+=`<rect x="${pl}" y="${pt}" width="${W-pl-pr}" height="${H-pt-pb}" fill="transparent" class="hov"/></svg><div class="tip"></div>`;
+  host.innerHTML=s;
+  const tip=$('.tip',host),hv=$('#hvl',host),dots=$$('.hvd',host);
+  const move=e=>{const r=host.getBoundingClientRect(),x=clamp(e.clientX-r.left,pl,W-pr),t=o.t0+(x-pl)/(W-pl-pr)*(o.t1-o.t0);
+    let txt=fD(t)+', '+fT(t);
+    o.series.forEach((se,i)=>{let j=lowerBound(se.ts,t);if(j>=se.ts.length)j=se.ts.length-1;if(j>0&&t-se.ts[j-1]<se.ts[j]-t)j--;if(j<0||Math.abs(se.ts[j]-t)>30*MIN){dots[i].setAttribute('visibility','hidden');return}
+      const v=se.vs(j);dots[i].setAttribute('cx',X(se.ts[j]));dots[i].setAttribute('cy',Y(v));dots[i].setAttribute('visibility','visible');txt+=(o.series.length>1?', '+se.short+' ':', ')+Math.round(v)+'%'+(se.lit?' ('+fL(v/100*se.lit)+')':'')});
+    hv.setAttribute('x1',x);hv.setAttribute('x2',x);hv.setAttribute('visibility','visible');
+    tip.textContent=txt;tip.style.display='block';tip.style.left=clamp(x,90,W-90)+'px';tip.style.top=pt+20+'px'};
+  const hov=$('.hov',host);hov.addEventListener('pointermove',move);hov.addEventListener('pointerdown',move);
+  hov.addEventListener('pointerleave',()=>{tip.style.display='none';hv.setAttribute('visibility','hidden');dots.forEach(d=>d.setAttribute('visibility','hidden'))});
+}
+function barChart(host,items,o={}){
+  const W=Math.max(260,host.clientWidth),H=180,pl=8,pr=8,pt=18,pb=24,n=items.length,bw=(W-pl-pr)/n,max=Math.max(1e-9,...items.map(x=>x.v))*1.1;
+  let s=`<svg width="${W}" height="${H}" role="img" aria-label="${esc(o.aria||'')}"><line class="gridl" x1="${pl}" x2="${W-pr}" y1="${H-pb}" y2="${H-pb}"/>`;
+  items.forEach((it,i)=>{const h=(H-pt-pb)*it.v/max,x=pl+i*bw+bw*.15,w=bw*.7;
+    s+=`<rect class="bar-r${it.hl?' hl':''}" x="${x}" y="${H-pb-h}" width="${w}" height="${Math.max(h,it.v>0?1:0)}" rx="${Math.min(4,w/3)}"><title>${esc(it.label+': '+it.f)}</title></rect>`;
+    if(!o.noVal)s+=`<text x="${x+w/2}" y="${H-pb-h-5}" text-anchor="middle" font-size="11">${esc(it.f)}</text>`;
+    if(it.lab!=null)s+=`<text x="${x+w/2}" y="${H-7}" text-anchor="middle">${esc(it.lab)}</text>`});
+  host.innerHTML=s+'</svg>';
+}
+
+/* ---------- analytics ---------- */
+function renderAnalytics(){
+  const dev=D(),ci=Math.min(state.anComp,dev.comps.length-1),c=dev.comps[ci],an=analyze(dev,ci),s=dev.settings,S=dev.st,p=dispPct(dev,ci);
+  $('#anComp').innerHTML=dev.comps.length>1?dev.comps.map((x,i)=>`<button data-ci="${i}" aria-pressed="${i===ci}">${esc(x.name)}</button>`).join(''):'';
+  $('#anComp').hidden=dev.comps.length<2;
+  const ln=an.nights[0],filling=S.fill&&c.flow>0;
+  const tiles=[
+    [filling?'Filling now':'Level now',p==null?'No reading':Math.round(p)+'%',filling?'+'+(c.flow/lpcm(c)).toFixed(1)+' cm/min, full in ~'+fDur((c.cap-c.litres)/Math.max(.1,c.flow)):(p==null?'Sensor fault':fL(p/100*c.cap)),filling],
+    ['Last fill',an.lastFill?fAgo(state.simNow-an.lastFill.end):'None',an.lastFill?'+'+fL(an.lastFill.rise[ci])+' in '+fDur((an.lastFill.end-an.lastFill.start)/MIN):''],
+    ['Empty to full',an.e2f?'~'+fDur(an.e2f):'—',an.rate?'at '+an.rate.toFixed(2)+' cm/min':''],
+    ['Motor today',fDur(an.motorToday),an.fillsToday+' fill'+(an.fillsToday===1?'':'s')],
+    ['Used today',fL(an.usedToday),Math.round(an.usedToday/c.cap*100)+'% of the tank'],
+    ['Busiest hour',hourLab(an.bh)+'–'+hourLab((an.bh+1)%24),'~'+fL(an.hourAvg[an.bh])+' on average'],
+    ['Last night',ln?ln.label:'—',ln&&ln.cls!=='na'?(ln.cm>=0?'−':'+')+Math.abs(ln.cm).toFixed(1)+' cm':'']];
+  $('#tiles').innerHTML=tiles.map(t=>`<div class="tile${t[3]?' hl':''}"><span>${t[0]}</span><b>${esc(t[1])}</b><small>${esc(t[2])}</small></div>`).join('');
+  // level history
+  const t1=state.simNow,t0=t1-state.range*DAY,bands=[];
+  an.fills.forEach(f=>bands.push([f.start,f.end,'fill']));
+  for(let d=dayStart(t0);d<=t1;d+=DAY)bands.push([d+s.nightStart*HOUR,d+s.nightEnd*HOUR,'night']);
+  const cols=['#1D9BC4','#D23A6E','#E39A1B','#1F8456'];
+  const series=dev.comps.map((x,i)=>({name:x.name,short:'C'+(i+1),color:cols[i],ts:x.ht,vs:j=>pctOf(x,x.hd[j]),lit:x.cap}));
+  lineChart($('#chLevel'),{t0,t1,series,bands,aria:'Level history'});
+  $('#lvLegend').innerHTML=(series.length>1?series.map(se=>`<span><i style="background:${se.color}"></i>${esc(se.name)}</span>`).join(''):'')+`<span><i style="background:var(--teal);opacity:.3"></i>Fill (motor on)</span><span><i style="background:var(--ink-2);opacity:.2"></i>Night check window</span>`;
+  barChart($('#chMotor'),an.days.map(d=>({v:d.motor,f:d.motor?fDur(d.motor):'0',label:fD(d.ds),lab:new Date(d.ds).toLocaleDateString('en-IN',{weekday:'short'})})),{aria:'Motor run time per day'});
+  barChart($('#chUsed'),an.days.map(d=>({v:d.used,f:d.used>=10000?(d.used/1000).toFixed(1)+'k':Math.round(d.used)+'',label:fD(d.ds),lab:new Date(d.ds).toLocaleDateString('en-IN',{weekday:'short'})})),{aria:'Water used per day in litres'});
+  barChart($('#chHour'),an.hourAvg.map((v,h)=>({v,f:fL(v),label:hourLab(h),lab:h%3===0?hourLab(h):null,hl:an.top3.includes(h)})),{noVal:true,aria:'Usage by hour'});
+  const rf=an.fills.filter(f=>f.rise[ci]>0).slice(-5).reverse();
+  $('#fillsTbl').innerHTML=rf.length?`<tr><th>Started</th><th>Duration</th><th>Amount</th></tr>`+rf.map(f=>`<tr><td>${fD(f.start)}, ${fT(f.start)}</td><td>${f.cur?'Filling now':fDur((f.end-f.start)/MIN)}</td><td>+${fL(f.rise[ci])}${f.full?' (to full)':''}</td></tr>`).join(''):`<tr><td class="muted">No fills recorded yet.</td></tr>`;
+  $('#nightInfo').textContent=`Level change between ${pad(s.nightStart)}:00 and ${pad(s.nightEnd)}:00, when nobody normally uses water. Leak limit ${s.leak} cm.`;
+  $('#nightTbl').innerHTML=an.nights.length?`<tr><th>Night</th><th>Change</th><th>Biggest drop in 1 h</th><th>Result</th></tr>`+an.nights.map(n=>`<tr><td>${fD(n.ds)}</td><td>${n.cls==='na'?'—':(n.cm>=0?'−':'+')+Math.abs(n.cm).toFixed(1)+' cm'+(n.cm>0?' ('+fL(n.L)+')':'')}</td><td>${n.cls==='na'?'—':Math.max(0,n.maxH).toFixed(1)+' cm'}</td><td><span class="chip ${n.cls}">${n.label}</span></td></tr>`).join(''):`<tr><td class="muted">The first check runs after the next night window.</td></tr>`;
+  renderAnSettings();
+}
+const hourLab=h=>{const a=h%12||12;return a+(h<12?' am':' pm')};
+function renderAnSettings(){
+  const dev=D(),s=dev.settings,dis=state.role==='viewer'?'disabled':'';
+  if($('#anSettings').contains(document.activeElement))return;
+  $('#anSettings').innerHTML=`<h3>Analytics settings</h3>${state.role==='viewer'?'<p class="muted" style="margin:0 0 10px">Sign in as Admin to change these.</p>':''}
+  <div class="f3">
+   <label class="f"><span>Fill detection threshold</span><input type="number" step="0.1" min="0.1" max="3" value="${s.fillThr}" data-set="fillThr" ${dis}><small>cm/min. Lower it if slow fills are missed.</small></label>
+   <label class="f"><span>Night check starts</span><select data-set="nightStart" ${dis}>${[0,1,2,3].map(h=>`<option value="${h}" ${h===s.nightStart?'selected':''}>${pad(h)}:00</option>`).join('')}</select></label>
+   <label class="f"><span>Night check ends</span><select data-set="nightEnd" ${dis}>${[4,5,6].map(h=>`<option value="${h}" ${h===s.nightEnd?'selected':''}>${pad(h)}:00</option>`).join('')}</select></label>
+   <label class="f"><span>Leak limit</span><input type="number" step="0.1" min="0.5" max="10" value="${s.leak}" data-set="leak" ${dis}><small>cm drop in the night window</small></label>
+  </div>
+  <div class="row"><button class="btn warn" data-act="clearHist" ${dis}>Clear history</button><small class="muted">Erases recorded levels and fills on this tank.</small></div>`;
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const dev=D(),s=dev.settings,ro=state.role==='viewer',dis=ro?'disabled':'',sec=$('#t-setup');
+  const ci=Math.min(state.calComp,dev.comps.length-1),c=dev.comps[ci];
+  const reco=recoFor(dev);
+  let h='';
+  if(ro)h+=`<div class="lockbar"><p>You’re viewing settings. Sign in as Admin to change them.</p><button class="btn pri" data-act="signin">Sign in</button></div>`;
+  h+=`<div class="grid2" style="margin-bottom:16px">`;
+  // usage & tank
+  h+=`<div class="card"><h3>Usage and tank</h3>
+   <div class="f"><span>Usage</span><div class="radios">${['Domestic','Commercial'].map(u=>`<label><input type="radio" name="usage" value="${u}" ${dev.usage===u?'checked':''} data-dev="usage" ${dis}>${u}</label>`).join('')}</div></div>
+   <div class="f2"><label class="f"><span>Tank location</span><select data-dev="location" ${dis}>${['Overhead (roof)','Loft / bathroom','Underground sump','Other'].map(o=>`<option ${o===dev.location?'selected':''}>${o}</option>`).join('')}</select></label>
+   <label class="f"><span>Tank shape</span><select data-dev="shape" ${dis}><option value="rect" ${dev.shape==='rect'?'selected':''}>Rectangular (box, loft)</option><option value="cyl" ${dev.shape==='cyl'?'selected':''}>Vertical cylinder</option></select></label></div>
+   ${dev.shape==='rect'?`<label class="f"><span>Tank size</span><select data-act="preset" ${dis}><option value="custom">Custom size</option>${PRESETS.map(p=>`<option value="${p.cap}" ${dev.preset==String(p.cap)?'selected':''}>Loft tank ${p.cap} L (${p.L} × ${p.W} × ${p.H} mm)</option>`).join('')}</select></label>
+   <div class="f3"><label class="f"><span>Length mm</span><input type="number" value="${dev.dims.L}" data-dim="L" ${dis}></label><label class="f"><span>Width mm</span><input type="number" value="${dev.dims.W}" data-dim="W" ${dis}></label><label class="f"><span>Height mm</span><input type="number" value="${dev.dims.H}" data-dim="H" ${dis}></label></div>`
+   :`<div class="f2"><label class="f"><span>Diameter mm</span><input type="number" value="${dev.dims.D||1100}" data-dim="D" ${dis}></label><label class="f"><span>Height mm</span><input type="number" value="${dev.dims.H}" data-dim="H" ${dis}></label></div>`}
+   <div class="f2"><label class="f"><span>Water depth when full (mm)</span><input type="number" value="${dev.depthMm}" data-dev="depthMm" ${dis}><small>Tank bottom to the overflow pipe</small></label>
+   <label class="f"><span>Capacity per ${dev.comps.length>1?'compartment':'tank'} (L)</span><input type="number" value="${c.cap}" data-act="cap" ${dis}><small>Rated capacity, used for litres everywhere</small></label></div>
+   <div class="preview">Recommended for ${dev.usage.toLowerCase()} use, ${dev.location.toLowerCase()}: night leak window ${pad(reco.nightStart)}:00–${pad(reco.nightEnd)}:00, low water alarm ${reco.low}%, leak limit ${reco.leak} cm.</div>
+   <button class="btn" data-act="reco" ${dis}>Apply recommended settings</button></div>`;
+  // sensors & compartments
+  h+=`<div class="card"><h3>Sensors and compartments</h3>
+   <label class="f"><span>Ultrasonic sensors on this tank</span><select data-act="ncomp" ${dis}>${[1,2,3,4].map(n=>`<option ${n===dev.comps.length?'selected':''}>${n}</option>`).join('')}</select><small>One sensor per compartment. Each compartment gets its own calibration, LED strip and analytics.</small></label>
+   ${dev.comps.map((x,i)=>`<label class="f"><span>Name of sensor ${i+1}</span><input type="text" value="${esc(x.name)}" data-cname="${i}" ${dis}></label>`).join('')}
+   <dl class="kv"><dt>Sensor 1 wiring</dt><dd>${dev.board.startsWith('ESP32')?'TRIG G17, ECHO G18, LED data G16':'TRIG D5, ECHO D6, LED data D2'}</dd><dt>Sensor type</dt><dd>Waterproof ultrasonic (JSN-SR04T / AJ-SR04M)</dd></dl>
+   <button class="btn" data-act="sensorTest">Run sensor test</button></div>`;
+  h+=`</div><div class="grid2" style="margin-bottom:16px">`;
+  // calibration
+  const pend=state.calPending||{full:c.cal.full,empty:c.cal.empty};
+  h+=`<div class="card"><h3>Calibration</h3>
+   ${dev.comps.length>1?`<div class="seg" style="margin-bottom:10px">${dev.comps.map((x,i)=>`<button data-calc="${i}" aria-pressed="${i===ci}">${esc(x.name)}</button>`).join('')}</div>`:''}
+   <dl class="kv"><dt>Sensor reading now</dt><dd id="calLive">—</dd><dt>Saved calibration</dt><dd>Full at ${c.cal.full.toFixed(1)} cm, empty at ${c.cal.empty.toFixed(1)} cm</dd></dl>
+   <div class="seg" style="margin-bottom:12px">${[['level','Current level'],['meas','Measurements'],['btn','Empty / Full buttons'],['dist','Distances']].map(m=>`<button data-calm="${m[0]}" aria-pressed="${state.calMethod===m[0]}">${m[1]}</button>`).join('')}</div>
+   <div id="calPanel">${calPanel(dev,c,dis)}</div>
+   <div class="preview" id="calPrev"></div>
+   <button class="btn pri" data-act="calSave" ${dis}>Save calibration</button></div>`;
+  // smart calibration
+  h+=`<div class="card"><h3>Smart calibration</h3><p class="muted" style="margin:0 0 10px;font-size:.92rem">Learns the real full line from the fills the device has recorded, so you don’t have to climb up and measure again.</p><div class="smart">`+
+   dev.comps.map((x,i)=>{const L=learnFull(dev,i);if(!L)return`<div class="s"><b>${esc(x.name)}</b><br><span class="muted">Needs at least 3 fills to full. Keep the device running.</span></div>`;
+     const diff=x.cal.full-L.full;return`<div class="s"><b>${esc(x.name)}</b><dl class="kv" style="margin:6px 0"><dt>Learned full line</dt><dd>${L.full.toFixed(1)} cm from ${L.n} fills</dd><dt>Saved full line</dt><dd>${x.cal.full.toFixed(1)} cm</dd><dt>Confidence</dt><dd>${Math.min(97,60+L.n*3)}%</dd></dl>
+     ${Math.abs(diff)>=.5?`<div class="preview warn">The tank fills ${Math.abs(diff).toFixed(1)} cm ${diff>0?'higher':'lower'} than calibrated, so full never shows 100%.</div><button class="btn pri" data-act="smartApply" data-i="${i}" ${dis}>Use learned full line</button>`:`<span class="chip ok">Calibration matches recorded fills</span>`}</div>`}).join('')+`</div></div>`;
+  h+=`</div><div class="grid2" style="margin-bottom:16px">`;
+  // site
+  h+=`<div class="card"><h3>Site details</h3>
+   <label class="f"><span>Society or organisation</span><input type="text" value="${esc(dev.site.org)}" data-site="org" ${dis}></label>
+   <div class="f2"><label class="f"><span>Building</span><input type="text" value="${esc(dev.site.building)}" data-site="building" ${dis}></label><label class="f"><span>Tank name</span><input type="text" value="${esc(dev.site.tank)}" data-site="tank" ${dis}></label></div>
+   <small class="muted">Shown on the dashboard, the app and the water report.</small></div>`;
+  // display & sensor
+  h+=`<div class="card"><h3>Display and sensor</h3>
+   <label class="f"><span>LED brightness <b id="brV">${s.brightness}</b></span><input type="range" min="10" max="255" value="${s.brightness}" data-set="brightness" ${dis}></label>
+   <label class="f"><span>Low water alarm <b id="lowV">${s.low}%</b></span><input type="range" min="5" max="60" value="${s.low}" data-set="low" ${dis}></label>
+   <div class="f2"><label class="f"><span>Strip direction</span><select data-set="dir" ${dis}><option value="up" ${s.dir==='up'?'selected':''}>Data in at the bottom</option><option value="down" ${s.dir==='down'?'selected':''}>Data in at the top</option></select></label>
+   <label class="f"><span>Colour mode</span><select data-set="color" ${dis}><option value="gradient" ${s.color==='gradient'?'selected':''}>Level colours (red to green)</option><option value="status" ${s.color==='status'?'selected':''}>One status colour</option><option value="blue" ${s.color==='blue'?'selected':''}>Water blue</option></select></label></div>
+   <div class="f3"><label class="f"><span>LEDs per strip</span><input type="number" min="8" max="60" value="${s.leds}" data-set="leds" ${dis}></label>
+   <label class="f"><span>Chained strips</span><select data-set="strips" ${dis}>${[1,2,3].map(n=>`<option ${n===s.strips?'selected':''}>${n}</option>`).join('')}</select></label>
+   <label class="f"><span>Wiring</span><select data-set="zigzag" ${dis}><option value="false" ${!s.zigzag?'selected':''}>Straight</option><option value="true" ${s.zigzag?'selected':''}>Zig-zag</option></select></label></div>
+   <label class="f"><span>Sensor trigger pulse (µs)</span><input type="number" min="10" max="50" value="${s.trig}" data-set="trig" ${dis}><small>AJ-SR04M usually needs 20 µs or more</small></label>
+   <button class="btn" data-act="defaults" ${dis}>Reset display to defaults</button></div>`;
+  h+=`</div><div class="grid2" style="margin-bottom:16px">`;
+  // wifi
+  h+=`<div class="card"><h3>Wi-Fi</h3><dl class="kv">${dev.wifi.on?`<dt>Network</dt><dd>${esc(dev.wifi.ssid)}</dd><dt>Signal</dt><dd>${dev.wifi.rssi} dBm (${rssiWord(dev.wifi.rssi)})</dd><dt>Address</dt><dd>http://${dev.host} or ${dev.ip}</dd>`:`<dt>Network</dt><dd>Not connected</dd>`}
+   <dt>Setup hotspot</dt><dd>${dev.wifi.on?'Off (turns on if Wi-Fi is lost)':'On: “YUCCA TANK WATER LEVEL”, 192.168.4.1'}</dd></dl>
+   <div class="row"><button class="btn" data-act="scan" ${dis}>Scan networks</button>${dev.wifi.on?`<button class="btn warn" data-act="forget" ${dis}>Forget network</button>`:''}</div>
+   <div id="netArea"></div></div>`;
+  // device
+  h+=`<div class="card"><h3>Device</h3><dl class="kv"><dt>Board</dt><dd>${dev.board}</dd><dt>Firmware</dt><dd>${dev.fw}</dd><dt>Running for</dt><dd id="uptime">${fDur((state.simNow-dev.st.bootAt)/MIN)}</dd>
+   <dt>Free memory</dt><dd>${dev.heap}</dd><dt>Restarts</dt><dd>${dev.restarts} (self-healing: ${dev.selfHeal+(dev.st.healed?1:0)})</dd><dt>MAC</dt><dd>${dev.mac}</dd></dl>
+   <div class="row"><button class="btn" data-act="restart" ${dis}>Restart device</button><button class="btn" data-act="sensorTest">Run sensor test</button></div></div>`;
+  h+=`</div>`;
+  // storage
+  const pts=dev.comps.reduce((a,x)=>a+x.ht.length,0),kb=Math.round(pts*8/1024+dev.fills.length*0.05+dev.log.length*0.06),cap=Math.round(dev.flashKB*.6);
+  h+=`<div class="card"><h3>Storage and history</h3><div class="meter"><i style="width:${Math.min(100,kb/cap*100)}%"></i></div>
+   <p class="muted" style="margin:0 0 10px;font-size:.92rem">${kb} KB of ${cap} KB used. Retention is sized to this board’s free flash.</p>
+   <dl class="kv"><dt>History kept</dt><dd>14 days, a level every 2 minutes</dd><dt>Readings stored</dt><dd>${nf.format(pts)}</dd><dt>Fills recorded</dt><dd>${dev.fills.length}</dd><dt>Log entries</dt><dd>${dev.log.length}</dd></dl>
+   <p class="muted" style="margin:0;font-size:.92rem">History is stored as sensor distance, so re-calibrating later also corrects old readings.</p></div>`;
+  sec.innerHTML=h;
+  updCalPreview();
+}
+function rssiWord(r){return r>-60?'strong':r>-70?'good':r>-80?'weak':'very weak'}
+function recoFor(dev){const r={...RECO[dev.usage]};if(LOW_BY_LOC[dev.location])r.low=LOW_BY_LOC[dev.location];return r}
+function calPanel(dev,c,dis){
+  const m=state.calMethod,D0=dev.depthMm/10,cur=c.read==null?null:c.read;
+  if(m==='level'&&state.calLv==null)state.calLv=cur==null?50:Math.round(pctOf(c,cur));
+  if(m==='level')return`<label class="f"><span>The water is at about <b id="calLvV">${state.calLv??50}%</b> right now</span><input type="range" min="0" max="100" value="${state.calLv??50}" id="calLv" ${dis}><small>Uses the water depth from Usage and tank (${D0.toFixed(1)} cm). No need to empty or fill the tank.</small></label>`;
+  if(m==='meas')return`<div class="f2"><label class="f"><span>Sensor to full water line (cm)</span><input type="number" step="0.1" id="calA" value="${c.cal.full.toFixed(1)}" ${dis}></label><label class="f"><span>Water depth when full (cm)</span><input type="number" step="0.1" id="calB" value="${(c.cal.empty-c.cal.full).toFixed(1)}" ${dis}></label></div>`;
+  if(m==='btn')return`<p style="margin:0 0 8px;font-size:.95rem">Press EMPTY when the tank is empty and FULL when it reaches the overflow line. Each uses the live reading.</p><div class="row"><button class="btn" data-act="markE" ${dis}>Mark EMPTY now</button><button class="btn" data-act="markF" ${dis}>Mark FULL now</button></div>`;
+  return`<div class="f2"><label class="f"><span>Distance when full (cm)</span><input type="number" step="0.1" id="calF" value="${c.cal.full.toFixed(1)}" ${dis}></label><label class="f"><span>Distance when empty (cm)</span><input type="number" step="0.1" id="calE" value="${c.cal.empty.toFixed(1)}" ${dis}></label></div>`;
+}
+function computeCal(){
+  const dev=D(),c=dev.comps[Math.min(state.calComp,dev.comps.length-1)],m=state.calMethod;
+  if(m==='level'){const p=(state.calLv??50)/100,Dp=dev.depthMm/10;if(c.read==null)return null;const full=c.read-(1-p)*Dp;return{full,empty:full+Dp}}
+  if(m==='meas'){const a=+($('#calA')||{}).value,b=+($('#calB')||{}).value;return{full:a,empty:a+b}}
+  if(m==='btn')return state.calPending||{full:c.cal.full,empty:c.cal.empty};
+  return{full:+($('#calF')||{}).value,empty:+($('#calE')||{}).value};
+}
+function updCalPreview(){
+  const el=$('#calPrev');if(!el)return;const r=computeCal();
+  if(!r||!isFinite(r.full)||!isFinite(r.empty)){el.className='preview bad';el.textContent='No sensor reading. Fix the sensor before calibrating.';return}
+  if(r.empty<=r.full+5){el.className='preview bad';el.textContent='Empty must be at least 5 cm further from the sensor than full.';return}
+  let t=`Full at ${r.full.toFixed(1)} cm, empty at ${r.empty.toFixed(1)} cm from the sensor (${(r.empty-r.full).toFixed(1)} cm of water).`;
+  if(r.full<25){el.className='preview warn';t+=' The full line is inside the sensor’s 25 cm blind zone. Mount the sensor higher, or readings near full will be wrong.'}else el.className='preview';
+  el.textContent=t;
+}
+
+/* ---------- log ---------- */
+function renderLog(){
+  const dev=D(),cat=state.logCat,items=dev.log.filter(e=>cat==='all'||e.cat===cat).sort((a,b)=>b.t-a.t).slice(0,250);
+  if(!items.length){$('#logList').innerHTML=`<li class="empty"><svg viewBox="0 0 84 100" class="mascot-anim"><use href="#mascot"/></svg>Nothing here yet. Entries appear as the device works.</li>`;return}
+  let h='',last='';
+  items.forEach(e=>{const d=fD(e.t);if(d!==last){h+=`<li class="day">${d}</li>`;last=d}h+=`<li class="e cat-${e.cat}"><time>${fT(e.t)}</time><i></i><span>${esc(e.msg)}</span></li>`});
+  $('#logList').innerHTML=h;
+}
+
+/* ---------- service ---------- */
+const NEW_FW='3.4.1';
+function renderService(){
+  const dev=D(),sec=$('#t-service');
+  if(state.svcBusy)return;
+  if(state.role!=='service'){sec.innerHTML=`<div class="card"><div class="empty"><svg viewBox="0 0 84 100" class="mascot-anim"><use href="#mascot"/></svg>
+    <h3 style="color:var(--ink)">For the manufacturer’s service team</h3><p style="max-width:440px;margin:0">Firmware updates over Wi-Fi and device identity live here. They need a Service key, which is separate from the society’s Admin password.</p>
+    <p style="margin:0">In this demo, the Service key is <b>demo-service</b>.</p><button class="btn pri" data-act="signin">Sign in as Service</button></div></div>`;return}
+  const upToDate=dev.fw===NEW_FW;
+  sec.innerHTML=`<div class="grid2"><div class="card"><h3>Firmware update over Wi-Fi</h3>
+   <dl class="kv"><dt>On the device</dt><dd>${dev.fw}</dd><dt>Bundled with this app</dt><dd>${NEW_FW} (sample update for the demo)</dd></dl>
+   <div class="fwbox" id="fwbox">${upToDate?`<div class="alert ok"><b>Up to date</b>The device runs the firmware bundled with this app.</div>`:
+   `<p style="margin:0;font-size:.95rem">The device keeps its settings, calibration and history through the update. Keep it powered until it restarts.</p><button class="btn pri" data-act="fw">Install ${NEW_FW}</button>`}</div></div>
+   <div class="card"><h3>Device identity</h3><dl class="kv"><dt>Serial</dt><dd>${dev.serial}</dd><dt>Board</dt><dd>${dev.board}</dd><dt>MAC</dt><dd>${dev.mac}</dd><dt>Manufactured</dt><dd>${dev.made}</dd><dt>Installed at</dt><dd>${esc(dev.site.org)}, ${esc(dev.site.building)}</dd></dl>
+   <p class="muted" style="margin:0;font-size:.92rem">The Service key is stored on the device only as a salted hash.</p></div></div>`;
+}
+function runFw(){
+  const dev=D(),box=$('#fwbox');state.svcBusy=true;
+  const steps=['Checking the device','Uploading firmware','Verifying','Restarting','Reconnecting'];
+  box.innerHTML=`<div class="prog"><i id="fwp"></i></div><ul class="steps">${steps.map((s,i)=>`<li id="fs${i}">${s}</li>`).join('')}</ul>`;
+  let i=0,pc=0,n=0;const mark=()=>steps.forEach((_,k)=>{$('#fs'+k).className=k<i?'done':k===i?'now':''});mark();
+  const iv=setInterval(()=>{
+    if(i===1){pc+=2+Math.random()*3;const bar=$('#fwp');if(bar)bar.style.width=Math.min(100,pc)+'%';if(pc<100)return}
+    else if(++n%6)return;
+    i++;if($('#fs0'))mark();if(i===3)state.restartUntil=performance.now()+3000;
+    if(i>=steps.length){clearInterval(iv);const old=dev.fw;dev.fw=NEW_FW;dev.restarts++;dev.st.bootAt=state.simNow;
+      addLog(dev,state.simNow,'device','Firmware updated '+old+' to '+NEW_FW+' over Wi-Fi by Service. Settings and history kept');
+      state.svcBusy=false;if(state.tab==='service')renderService();toast('Firmware '+NEW_FW+' installed. Settings and history kept.')}
+  },120);
+}
+
+/* ---------- modals ---------- */
+function openModal(html,wide){const m=$('#modal'),b=$('#mbox');b.className='mbox'+(wide?' wide':'');b.innerHTML=`<button class="mclose noprint" data-act="close" aria-label="Close">×</button>`+html;m.hidden=false;setTimeout(()=>{const f=b.querySelector('input,button.pri,button:not(.mclose)');f&&f.focus()},30)}
+function closeModal(){$('#modal').hidden=true;document.body.classList.remove('printing')}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2800)}
+function tour(){
+  openModal(`<div class="mascot-hero"><svg viewBox="0 0 84 100" class="mascot-anim"><use href="#mascot"/></svg><h2>See how the Water Tanks Monitor works</h2></div>
+  <p>This demo runs the tank dashboard with sample data from three demo tanks. It behaves like a real device, but nothing you change here reaches real hardware.</p>
+  <ul>
+   <li>Use the <b>Try it</b> bar at the bottom: switch the motor on, open a tap, start a leak or disconnect the sensor, then watch the level, LEDs and alerts react.</li>
+   <li>Pick a tank at the top: a society overhead tank with two compartments, a home loft tank, or an underground sump.</li>
+   <li>Open <b>Analytics</b> for 14 days of history, motor time, daily use and the night leak check.</li>
+   <li>Sign in as <b>Admin</b> (password <b>demo-admin</b>) to change settings and calibration, or as <b>Service</b> (key <b>demo-service</b>) to try a firmware update.</li>
+   <li>Speed up time to 1200× to watch a whole day go by in about a minute.</li>
+  </ul>
+  ${NATIVE?'<p style="margin:0 0 14px">Want this for your society? Tap <b>Contact us</b> at any time and send us your details.</p>':''}
+  <div class="row" style="justify-content:flex-end">${NATIVE?'<button class="btn" data-act="contact">Contact us</button>':''}<button class="btn pri" data-act="close">Start exploring</button></div>`);
+}
+function signIn(){
+  if(state.role!=='viewer'){state.role='viewer';onRole();toast('Signed out');return}
+  openModal(`<h2>Sign in</h2><div class="f"><span>Role</span><div class="radios"><label><input type="radio" name="rl" value="admin" checked>Admin (society)</label><label><input type="radio" name="rl" value="service">Service (manufacturer)</label></div></div>
+  <label class="f"><span id="pwL">Admin password</span><input type="password" id="pw" autocomplete="off"></label><div class="err" id="pwErr"></div>
+  <p class="muted" style="font-size:.92rem;margin:0 0 12px">Demo: Admin password <b>demo-admin</b>, Service key <b>demo-service</b>. <button class="linkbtn" data-act="fillPw">Fill it in for me</button></p>
+  <div class="row" style="justify-content:flex-end"><button class="btn" data-act="close">Cancel</button><button class="btn pri" data-act="doSignin">Sign in</button></div>`);
+  $$('input[name=rl]').forEach(r=>r.addEventListener('change',()=>{$('#pwL').textContent=r.value==='admin'?'Admin password':'Service key';$('#pwErr').textContent=''}));
+  $('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')doSignin()});
+}
+function doSignin(){
+  const r=$('input[name=rl]:checked').value,pw=$('#pw').value.trim();
+  if((r==='admin'&&pw==='demo-admin')||(r==='service'&&pw==='demo-service')){state.role=r;closeModal();onRole();toast('Signed in as '+(r==='admin'?'Admin':'Service'));addLog(D(),state.simNow,'device',(r==='admin'?'Admin':'Service')+' signed in from the dashboard')}
+  else $('#pwErr').textContent=r==='admin'?'That password doesn’t match. In this demo it’s demo-admin.':'That key doesn’t match. In this demo it’s demo-service.';
+}
+function onRole(){
+  const b=$('#roleBtn');b.textContent=state.role==='viewer'?'Sign in':(state.role==='admin'?'Admin':'Service')+', sign out';b.classList.toggle('on',state.role!=='viewer');
+  $('#svcLock').hidden=state.role==='service';renderAll(true);
+}
+function sensorTest(){
+  const dev=D(),ci=Math.min(state.calComp,dev.comps.length-1),c=dev.comps[ci];
+  openModal(`<h2>Sensor test: ${esc(c.name)}</h2><p class="muted" style="margin:0 0 10px">Sends 15 pings and checks that the echoes are steady.</p><div class="tblwrap"><table id="stT"><tr><th>Ping</th><th>Distance</th></tr></table></div><div id="stR" style="margin-top:12px"></div>`);
+  const vals=[];let n=0;const iv=setInterval(()=>{if($('#modal').hidden){clearInterval(iv);return}
+    n++;const v=dev.st.fault&&ci===0?null:trueDist(c)+(Math.random()-.5)*.4;vals.push(v);
+    $('#stT').insertAdjacentHTML('beforeend',`<tr><td>${n}</td><td>${v==null?'<span class="chip leak">No echo</span>':v.toFixed(1)+' cm'}</td></tr>`);
+    if(n>=15){clearInterval(iv);const ok=vals.filter(x=>x!=null);const med=median(ok),spread=ok.length?Math.max(...ok)-Math.min(...ok):0;
+      $('#stR').innerHTML=ok.length<12?`<div class="alert bad"><b>Sensor not answering</b>${ok.length} of 15 echoes received. Check the cable, the connector and the trigger pulse (now ${dev.settings.trig} µs).</div>`
+      :`<div class="alert ok"><b>Sensor OK</b>${ok.length} of 15 echoes, median ${med.toFixed(1)} cm, spread ${spread.toFixed(1)} cm.${med<25?' Warning: the water is inside the 25 cm blind zone.':''}</div>`}},180);
+}
+function report(){
+  const dev=D();let h=`<div class="report"><h2>Water report</h2><p class="muted" style="margin:0">${esc(dev.site.org)}, ${esc(dev.site.building)}, ${esc(dev.site.tank)}. Last 7 days to ${fD(state.simNow)}.</p>
+  <h3>Tank details</h3><table><tr><td>Usage</td><td>${dev.usage}</td><td>Location</td><td>${dev.location}</td></tr><tr><td>Tank size</td><td>${dev.dims.L} × ${dev.dims.W} × ${dev.dims.H} mm</td><td>Water depth</td><td>${dev.depthMm} mm</td></tr>
+  <tr><td>Capacity</td><td>${fL(dev.comps.reduce((a,c)=>a+c.cap,0))}</td><td>Device</td><td>${dev.board}, firmware ${dev.fw}</td></tr></table>`;
+  dev.comps.forEach((c,i)=>{const an=analyze(dev,i);
+    h+=`<h3>${esc(c.name)}</h3><table><tr><th>Day</th><th>Water used</th><th>Motor time</th><th>Fills</th></tr>`+an.days.map(d=>`<tr><td>${fD(d.ds)}</td><td>${fL(d.used)}</td><td>${fDur(d.motor)}</td><td>${d.fills}</td></tr>`).join('')+
+    `<tr><td><b>Total</b></td><td><b>${fL(an.days.reduce((a,d)=>a+d.used,0))}</b></td><td><b>${fDur(an.days.reduce((a,d)=>a+d.motor,0))}</b></td><td><b>${an.days.reduce((a,d)=>a+d.fills,0)}</b></td></tr></table>
+    <p style="margin:4px 0">Calibration: full at ${c.cal.full.toFixed(1)} cm, empty at ${c.cal.empty.toFixed(1)} cm, ${lpcm(c).toFixed(1)} L per cm. Night checks: ${an.nights.map(n=>fD(n.ds).split(',')[0]+' '+n.label).join('; ')||'none yet'}.</p>`});
+  h+=`<div class="row noprint" style="justify-content:flex-end;margin-top:14px"><button class="btn" data-act="close">Close</button><button class="btn pri" data-act="print">Print or save as PDF</button></div></div>`;
+  openModal(h,true);
+}
+function confirmBox(title,text,btn,fn){openModal(`<h2>${esc(title)}</h2><p>${esc(text)}</p><div class="row" style="justify-content:flex-end"><button class="btn" data-act="close">Cancel</button><button class="btn pri" id="cfOk">${esc(btn)}</button></div>`);$('#cfOk').onclick=()=>{closeModal();fn()}}
+
+/* ---------- actions ---------- */
+function saved(msg){toast(msg||'Saved to the device');state.anCache={}}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act],[data-tab],[data-go],[data-ci],[data-r],[data-c],[data-s],[data-calc],[data-calm]');if(!t)return;
+  const dev=D();
+  if(t.dataset.tab){setTab(t.dataset.tab);return}
+  if(t.dataset.go){e.preventDefault();setTab(t.dataset.go);return}
+  if(t.dataset.ci!=null){state.anComp=+t.dataset.ci;renderAnalytics();return}
+  if(t.dataset.r){state.range=+t.dataset.r;$$('#rangeSeg button').forEach(b=>b.setAttribute('aria-pressed',b===t));renderAnalytics();return}
+  if(t.dataset.c){state.logCat=t.dataset.c;$$('#logSeg button').forEach(b=>b.setAttribute('aria-pressed',b===t));renderLog();return}
+  if(t.dataset.s){state.speed=+t.dataset.s;$$('#speedSeg button').forEach(b=>b.setAttribute('aria-pressed',b===t));return}
+  if(t.dataset.calc!=null){state.calComp=+t.dataset.calc;state.calPending=null;state.calLv=null;renderSetup();return}
+  if(t.dataset.calm){state.calMethod=t.dataset.calm;state.calPending=null;state.calLv=null;renderSetup();return}
+  const a=t.dataset.act;
+  if(a==='close')closeModal();
+  else if(a==='signin')signIn();
+  else if(a==='contact'){closeModal();if(NATIVE)NATIVE.contactUs()}
+  else if(a==='fillPw'){$('#pw').value=$('input[name=rl]:checked').value==='admin'?'demo-admin':'demo-service'}
+  else if(a==='doSignin')doSignin();
+  else if(a==='print'&&NATIVE){document.body.classList.add('printing');NATIVE.print('Water report, '+dev.site.org)}
+  else if(a==='print'){document.body.classList.add('printing');try{window.print()}catch(_){toast('Printing isn’t available here. Open the page in its own tab to print.')}setTimeout(()=>document.body.classList.remove('printing'),500)}
+  else if(a==='sensorTest')sensorTest();
+  else if(a==='fw')runFw();
+  else if(a==='restart')confirmBox('Restart the device?','The LEDs go dark for a few seconds and the dashboard reconnects on its own. Settings and history are kept.','Restart',()=>{state.restartUntil=performance.now()+4000;dev.restarts++;dev.st.bootAt=state.simNow;addLog(dev,state.simNow,'device','Restarted from the dashboard');addLog(dev,state.simNow+MIN/2,'wifi','Connected to '+dev.wifi.ssid+' ('+dev.wifi.rssi+' dBm)');renderSetup()});
+  else if(a==='clearHist')confirmBox('Clear history?','This erases the recorded levels and fills for '+dev.name+'. Settings and calibration stay.','Clear history',()=>{dev.comps.forEach(c=>{c.ht=[];c.hd=[]});dev.fills=[];addLog(dev,state.simNow,'device','History cleared by Admin');saved('History cleared');renderAll(true)});
+  else if(a==='reco'){Object.assign(dev.settings,recoFor(dev));addLog(dev,state.simNow,'device','Recommended settings applied for '+dev.usage.toLowerCase()+' use');saved('Recommended settings applied');renderAll(true)}
+  else if(a==='defaults'){const keep={low:dev.settings.low,nightStart:dev.settings.nightStart,nightEnd:dev.settings.nightEnd,leak:dev.settings.leak,fillThr:dev.settings.fillThr};dev.settings=Object.assign({},DEF_SET,keep);buildLeds();saved('Display settings reset to defaults');renderSetup()}
+  else if(a==='markE'||a==='markF'){const c=dev.comps[Math.min(state.calComp,dev.comps.length-1)];if(c.read==null){toast('No sensor reading right now');return}
+    state.calPending=state.calPending||{full:c.cal.full,empty:c.cal.empty};state.calPending[a==='markE'?'empty':'full']=c.read;updCalPreview();toast((a==='markE'?'Empty':'Full')+' set to '+c.read.toFixed(1)+' cm. Save to keep it.')}
+  else if(a==='calSave'){const r=computeCal(),c=dev.comps[Math.min(state.calComp,dev.comps.length-1)];
+    if(!r||!(r.empty>r.full+5)){toast('Fix the calibration values first');return}c.cal={full:+r.full.toFixed(1),empty:+r.empty.toFixed(1)};state.calPending=null;state.calLv=null;
+    addLog(dev,state.simNow,'device','Calibration saved for '+c.name+': full '+c.cal.full+' cm, empty '+c.cal.empty+' cm');saved('Calibration saved. Old history now uses it too.');renderAll(true)}
+  else if(a==='smartApply'){const i=+t.dataset.i,c=dev.comps[i],L=learnFull(dev,i),span=c.cal.empty-c.cal.full;c.cal.full=+L.full.toFixed(1);c.cal.empty=+(c.cal.full+Math.max(span,dev.depthMm/10)).toFixed(1);
+    addLog(dev,state.simNow,'device','Smart calibration: full line for '+c.name+' set to '+c.cal.full+' cm');saved('Learned full line applied');renderAll(true)}
+  else if(a==='scan'){$('#netArea').innerHTML='<p class="muted">Scanning…</p>';setTimeout(()=>{const nets=[[dev.wifi.ssid||'GreenValley-Office',dev.wifi.rssi],['Home_WiFi',-58],['JioFiber-4G7k',-67],['Airtel_Wing_C',-74],['GreenValley-Guest',-79]].filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i);
+    $('#netArea').innerHTML='<ul class="netlist">'+nets.map(n=>`<li><button data-act="pickNet" data-n="${esc(n[0])}" data-rs="${n[1]}"><span>🔒 ${esc(n[0])}</span><span class="muted">${n[1]} dBm</span></button></li>`).join('')+'</ul>'},1100)}
+  else if(a==='pickNet'){const n=t.dataset.n;$('#netArea').innerHTML=`<label class="f" style="margin-top:10px"><span>Password for ${esc(n)}</span><input type="password" id="netPw" placeholder="Any password works in the demo"></label><button class="btn pri" data-act="joinNet" data-n="${esc(n)}" data-rs="${t.dataset.rs}">Connect</button>`}
+  else if(a==='joinNet'){const n=t.dataset.n,r=+t.dataset.rs;$('#netArea').innerHTML='<p class="muted">Connecting…</p>';setTimeout(()=>{dev.wifi={ssid:n,rssi:r,on:true};addLog(dev,state.simNow,'wifi','Connected to '+n+' ('+r+' dBm). Hotspot off in 30 s');saved('Connected to '+n);renderSetup();updConn()},1500)}
+  else if(a==='forget')confirmBox('Forget this network?','The device opens its setup hotspot “YUCCA TANK WATER LEVEL” so you can connect it to another network. The LEDs keep working.','Forget network',()=>{addLog(dev,state.simNow,'wifi','Forgot '+dev.wifi.ssid+'. Setup hotspot on');dev.wifi.on=false;renderSetup();updConn()});
+});
+document.addEventListener('input',e=>{
+  const t=e.target,dev=D();
+  if(t.id==='calLv'){state.calLv=+t.value;$('#calLvV').textContent=t.value+'%';updCalPreview();return}
+  if(['calA','calB','calF','calE'].includes(t.id)){updCalPreview();return}
+  if(t.dataset.set==='brightness'){dev.settings.brightness=+t.value;$('#brV').textContent=t.value}
+  if(t.dataset.set==='low'){dev.settings.low=+t.value;$('#lowV').textContent=t.value+'%'}
+});
+document.addEventListener('change',e=>{
+  const t=e.target,dev=D();
+  if(t.id==='devSel'){state.devIdx=+t.value;state.anComp=0;state.calComp=0;state.calPending=null;state.calLv=null;try{localStorage.setItem('wtms-demo-dev',dev.id)}catch(_){};buildTank();renderAll(true);syncDock();updConn();return}
+  if(t.dataset.set){let v=t.value;const k=t.dataset.set;if(k==='zigzag')v=v==='true';else if(!['dir','color'].includes(k))v=+v;
+    if(k==='leds')v=clamp(Math.round(v)||30,8,60);dev.settings[k]=v;if(['dir','leds','strips','zigzag'].includes(k))buildLeds();if(k==='nightStart'||k==='nightEnd'||k==='leak'){state.anCache={};renderAnalytics()}saved();return}
+  if(t.dataset.dev){dev[t.dataset.dev]=t.dataset.dev==='depthMm'?+t.value:t.value;if(t.dataset.dev==='shape'&&dev.shape==='cyl'&&!dev.dims.D)dev.dims.D=1100;saved();renderSetup();renderGlance();return}
+  if(t.dataset.dim){dev.dims[t.dataset.dim]=+t.value;dev.preset='custom';saved();renderGlance();return}
+  if(t.dataset.site){dev.site[t.dataset.site]=t.value;saved();renderOverview();return}
+  if(t.dataset.cname!=null){dev.comps[+t.dataset.cname].name=t.value||('Sensor '+(+t.dataset.cname+1));saved();buildTank();return}
+  if(t.dataset.act==='preset'){if(t.value==='custom'){dev.preset='custom';return}const p=PRESETS.find(x=>String(x.cap)===t.value);
+    dev.preset=t.value;dev.dims={L:p.L,W:p.W,H:p.H,D:0};dev.depthMm=p.H-40;dev.comps.forEach(c=>{c.cap=p.cap});saved('Preset applied. Water depth set to '+(p.H-40)+' mm, measure your overflow pipe to confirm.');renderSetup();renderGlance();return}
+  if(t.dataset.act==='cap'){const v=+t.value;if(v>0){dev.comps.forEach(c=>{c.cap=v});saved();renderGlance()}return}
+  if(t.dataset.act==='ncomp'){const n=+t.value;confirmBox('Change to '+n+' sensor'+(n>1?'s':'')+'?','In the demo this restarts the sample history for this tank so each compartment has its own data.','Change',()=>{
+    const base=dev.comps[0];const comps=[];for(let i=0;i<n;i++){const o=dev.comps[i]||{...base,name:'Compartment '+(i+1),cal:null};comps.push({name:o.name,cap:base.cap,depth:base.depth,fullDist:base.fullDist,share:1/n,dailyUse:base.dailyUse*(1-.06*i)})}
+    if(n===1)comps[0].name=dev.comps.length>1?'Tank':comps[0].name;dev.comps=comps;dev.set=dev.settings;dev.nightLeaks=dev.nightLeaks.filter(x=>x.comp<n);dev.nightDrops=dev.nightDrops.filter(x=>x.comp<n);
+    initDev(dev,state.simNow);state.anCache={};state.calComp=0;state.anComp=0;buildTank();renderAll(true);toast('Now using '+n+' sensor'+(n>1?'s':''))});renderSetup();return}
+});
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)closeModal()});
+$('#roleBtn').onclick=signIn;$('#tourBtn').onclick=tour;$('#reportBtn').onclick=report;
+$('#resetBtn').onclick=()=>confirmBox('Reset the demo?','All three demo tanks go back to their sample data and settings.','Reset demo',()=>{state.simNow=Date.now();state.role='viewer';boot();onRole();toast('Demo reset')});
+
+// dock
+function syncDock(){const S=D().st;$('#dMotor').setAttribute('aria-pressed',S.motor);$('#dTap').setAttribute('aria-pressed',S.tap);$('#dLeak').setAttribute('aria-pressed',S.leak);$('#dFault').setAttribute('aria-pressed',S.fault)}
+$('#dMotor').onclick=()=>{const dev=D();if(dev.st.motor){motorOff(dev,state.simNow);toast('Motor off')}else{motorOn(dev,state.simNow,true);toast('Motor on. It stays on until you switch it off, just like a real pump.')}syncDock()};
+$('#dTap').onclick=()=>{const S=D().st;S.tap=!S.tap;syncDock();toast(S.tap?'Tap open on '+D().comps[0].name+'. Water use goes up.':'Tap closed')};
+$('#dLeak').onclick=()=>{const dev=D(),S=dev.st;S.leak=!S.leak;syncDock();toast(S.leak?'Slow leak started. The night check ('+pad(dev.settings.nightStart)+':00–'+pad(dev.settings.nightEnd)+':00) will flag it. Try 1200× to get there faster.':'Leak fixed')};
+$('#dFault').onclick=()=>{const dev=D(),S=dev.st;S.fault=!S.fault;S.faultSince=0;S.healed=false;
+  addLog(dev,state.simNow,S.fault?'alert':'device',S.fault?'Sensor on '+dev.comps[0].name+' not responding':'Sensor readings back to normal');syncDock();toast(S.fault?'Sensor disconnected':'Sensor reconnected')};
+
+/* ---------- tabs, rendering, loop ---------- */
+const TABS=['overview','analytics','setup','log','service'];
+function setTab(tab,noHash){if(!TABS.includes(tab))tab='overview';state.tab=tab;
+  $$('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
+  TABS.forEach(x=>$('#t-'+x).hidden=x!==tab);
+  if(!noHash){try{history.replaceState(null,'','#'+tab)}catch(_){}}
+  renderAll(true);window.scrollTo({top:0})}
+function updConn(){const dev=D(),c=$('#conn'),rs=state.restartUntil>performance.now();
+  c.classList.toggle('warn',rs||!dev.wifi.on);$('span',c).textContent=rs?'Restarting…':dev.wifi.on?'Online, '+dev.wifi.rssi+' dBm':'Hotspot only'}
+function renderAll(force){
+  renderOverview();
+  if(state.tab==='overview')renderGlance();
+  if(state.tab==='analytics')renderAnalytics();
+  if(state.tab==='setup'&&force)renderSetup();
+  if(state.tab==='log')renderLog();
+  if(state.tab==='service'&&force)renderService();
+}
+function updClock(){const t=state.simNow;$('#clock').innerHTML=`<b>${fT(t)}</b>${new Date(t).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}`}
+let lastFrame=performance.now(),lastSlow=0,lastLogN=0;
+function loop(){
+  const now=performance.now(),dt=Math.min(1000,now-lastFrame);lastFrame=now;
+  let rem=dt*state.speed;while(rem>0){const s=Math.min(rem,MIN);state.simNow+=s;DEVS.forEach(d=>step(d,state.simNow,s/MIN,true));rem-=s}
+  DEVS.forEach(liveRead);
+  updTank();updLeds();updClock();
+  const rs=state.restartUntil>now;$('#restartOv').hidden=!rs;
+  if(now-lastSlow>1000){lastSlow=now;renderOverview();updConn();syncDock();
+    if(state.tab==='overview')renderGlance();
+    if(state.tab==='analytics'&&now-(loop.lastAn||0)>4000){loop.lastAn=now;state.anCache={};renderAnalytics()}
+    if(state.tab==='log'&&D().log.length!==lastLogN){lastLogN=D().log.length;renderLog()}
+    if(state.tab==='setup'){const c=D().comps[Math.min(state.calComp,D().comps.length-1)],cl=$('#calLive');if(cl)cl.textContent=c.read==null?'No reading':c.read.toFixed(1)+' cm ('+Math.round(pctOf(c,c.read))+'%)';const up=$('#uptime');if(up)up.textContent=fDur((state.simNow-D().st.bootAt)/MIN);if(state.calMethod==='level')updCalPreview()}}
+}
+function boot(){
+  DEVS=baseDevices();const now=state.simNow;DEVS.forEach(d=>initDev(d,now));
+  let saved=null;try{saved=localStorage.getItem('wtms-demo-dev')}catch(_){}
+  const i=DEVS.findIndex(d=>d.id===saved);state.devIdx=i>=0?i:0;state.anCache={};
+  $('#devSel').innerHTML=DEVS.map((d,i)=>`<option value="${i}" ${i===state.devIdx?'selected':''}>${esc(d.name)}</option>`).join('');
+  DEVS.forEach(liveRead);buildTank();syncDock();updConn();
+}
+// ---- hooks for the Android demo app ----
+if(NATIVE){$('#contactBtn').hidden=false}
+window.wtmsBack=()=>{if(!$('#modal').hidden){closeModal();return true}if(state.tab!=='overview'){setTab('overview');return true}return false};
+window.wtmsTour=()=>tour();
+window.wtmsReset=()=>$('#resetBtn').click();
+window.wtmsPrintDone=()=>document.body.classList.remove('printing');
+boot();
+setTab((location.hash||'').slice(1)||'overview',true);
+window.addEventListener('hashchange',()=>setTab(location.hash.slice(1),true));
+window.addEventListener('resize',()=>{clearTimeout(window.__rz);window.__rz=setTimeout(()=>{if(state.tab==='analytics')renderAnalytics()},200)});
+setInterval(loop,200);
+try{if(!localStorage.getItem('wtms-demo-toured')){tour();localStorage.setItem('wtms-demo-toured','1')}}catch(_){tour()}
+</script>
+</body>
+</html>

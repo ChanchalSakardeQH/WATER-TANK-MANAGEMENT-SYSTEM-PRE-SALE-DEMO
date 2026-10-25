@@ -1,0 +1,532 @@
+﻿<#
+.SYNOPSIS
+    Build the Water Tanks Monitor firmware and flash it by USB, on Windows (woodyouloveit.com).
+
+.DESCRIPTION
+    Double-click build-firmware.bat for a menu, or run with options.
+
+      - Builds the firmware for ESP32 (DevKit V1) and/or NodeMCU (ESP8266) with fixed, tested versions:
+        ESP32 core 2.0.17, ESP8266 core 3.1.2, Adafruit NeoPixel 1.12.3. They are installed once in the tools
+        folder, apart from the Arduino IDE, so the IDE's own boards and libraries are not touched.
+      - Copies the firmware to firmware\wtms-<board>-<version>.bin, where the Android app build picks it up
+        (the app then updates tanks over Wi-Fi). Earlier files move to firmware\older\.
+      - Flashes a tank by USB, keeping its settings, calibration, Wi-Fi, passwords, history and logs
+        (flash erase is off). Common upload problems are recognised, explained and retried.
+      - Flashes a ready .bin by USB without building (for an update in the field with a laptop).
+      - Serial monitor, set-up check, and the manufacturer service key.
+
+    Everything is logged to release\logs\build-firmware-<date-time>.log.
+
+.PARAMETER Task
+    Menu (default), Build, Flash, FlashBin, Monitor, Doctor, ServiceKey.
+.PARAMETER Board
+    esp32 (default), esp8266, or both (Build only).
+.PARAMETER Port
+    Serial port, e.g. COM5. Found automatically when one board is connected.
+.PARAMETER File
+    FlashBin: the .bin to flash (default: the newest firmware\wtms-<board>-*.bin).
+.PARAMETER EraseAll
+    Flash: erase the whole chip first (factory reset: settings and history are lost). Asks first.
+.PARAMETER NoBuild
+    Flash: use the last build instead of building again.
+.PARAMETER Yes
+    Answer yes to set-up and fix questions (unattended use).
+.PARAMETER NoAutoFix
+    Only report problems; do not install or change anything.
+.PARAMETER DryRun
+    Show what would be done without doing it.
+
+.EXAMPLE
+    build-firmware.bat -Task Build -Board both
+.EXAMPLE
+    build-firmware.bat -Task Flash -Board esp32 -Port COM5
+.EXAMPLE
+    build-firmware.bat -Task FlashBin -Board esp32 -File firmware\wtms-esp32-3.4.0.bin
+.NOTES
+    Copyright (C) 2026 Chanchal Sakarde - woodyouloveit.com - wooduloveit.com
+    SPDX-License-Identifier: GPL-3.0-or-later
+#>
+[CmdletBinding()]
+param(
+    [ValidateSet('Menu', 'Build', 'Flash', 'FlashBin', 'Monitor', 'Doctor', 'ServiceKey')]
+    [string]$Task = 'Menu',
+    [ValidateSet('esp32', 'esp8266', 'both')]
+    [string]$Board = 'esp32',
+    [string]$Port,
+    [string]$File,
+    [switch]$EraseAll,
+    [switch]$NoBuild,
+    [switch]$Yes,
+    [switch]$NoAutoFix,
+    [switch]$DryRun
+)
+Set-StrictMode -Version 2.0
+$ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
+
+# ---------------------------------------------------------------- places and versions
+$Repo      = Split-Path -Parent $PSScriptRoot
+$Sketch    = Join-Path $Repo 'water_level_indicator'
+$FwDir     = Join-Path $Repo 'firmware'
+$OutRoot   = [IO.Path]::Combine($Repo, 'release', 'firmware')
+$LogDir    = [IO.Path]::Combine($Repo, 'release', 'logs')
+$Stamp     = Get-Date -Format 'yyyyMMdd-HHmmss'
+$LogFile   = Join-Path $LogDir "build-firmware-$Stamp.log"
+$OnWindows = [Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT
+$Home_     = [Environment]::GetFolderPath('UserProfile')
+
+$CliVersion     = '1.1.1'
+$Esp32Core      = '2.0.17'
+$Esp8266Core    = '3.1.2'
+$NeoPixel       = '1.12.3'
+$Esp32Index     = 'https://espressif.github.io/arduino-esp32/package_esp32_index.json'
+$Esp8266Index   = 'https://arduino.esp8266.com/stable/package_esp8266com_index.json'
+
+# The tools live in the Android folder (D:\Android\Tools) like the Android build's, or in %USERPROFILE%\.woodyouloveit
+function Find-AndroidRoot {
+    if ($env:SM_ANDROID_ROOT -and (Test-Path $env:SM_ANDROID_ROOT)) { return $env:SM_ANDROID_ROOT }
+    $dir = Get-Item -LiteralPath $Repo
+    while ($dir) {
+        if ((Test-Path (Join-Path $dir.FullName 'Sdk')) -or (Test-Path (Join-Path $dir.FullName 'Tools'))) { return $dir.FullName }
+        $dir = $dir.Parent
+    }
+    if ($OnWindows -and (Test-Path 'D:\Android')) { return 'D:\Android' }
+    return $null
+}
+$AndroidRoot = Find-AndroidRoot
+$ToolsDir  = if ($AndroidRoot) { Join-Path $AndroidRoot 'Tools' } else { Join-Path $Home_ '.woodyouloveit' }
+$CliDir    = Join-Path $ToolsDir 'arduino-cli'
+$CliExe    = if ($env:WYLI_TEST_ARDUINO_CLI) { $env:WYLI_TEST_ARDUINO_CLI } else { Join-Path $CliDir 'arduino-cli.exe' }
+$CliData   = Join-Path $ToolsDir 'arduino-data'
+$CliConfig = if ($env:WYLI_TEST_CLI_CONFIG) { $env:WYLI_TEST_CLI_CONFIG } else { Join-Path $CliData 'arduino-cli.yaml' }
+
+# Boards. Erase stays off, so settings and history survive every USB upload.
+$Boards = @{
+    esp32 = @{
+        Name = 'ESP32 DevKit V1'; Core = "esp32:esp32@$Esp32Core"; Platform = 'esp32:esp32'
+        Fqbn = if ($env:WYLI_TEST_FQBN_ESP32) { $env:WYLI_TEST_FQBN_ESP32 } else { 'esp32:esp32:esp32' }
+        Options = 'PartitionScheme=default,EraseFlash=none,UploadSpeed=921600'
+        Slow    = 'PartitionScheme=default,EraseFlash=none,UploadSpeed=115200'
+        Safe    = 'PartitionScheme=default,EraseFlash=none,UploadSpeed=115200,FlashMode=dio,FlashFreq=40'
+        Erase   = 'PartitionScheme=default,EraseFlash=all,UploadSpeed=921600'
+        AppOffset = '0x10000'; OtaMax = 1310720; Chip = 'esp32'
+    }
+    esp8266 = @{
+        Name = 'NodeMCU (ESP8266)'; Core = "esp8266:esp8266@$Esp8266Core"; Platform = 'esp8266:esp8266'
+        Fqbn = if ($env:WYLI_TEST_FQBN_ESP8266) { $env:WYLI_TEST_FQBN_ESP8266 } else { 'esp8266:esp8266:nodemcuv2' }
+        Options = 'eesz=4M2M,wipe=none,baud=921600'
+        Slow    = 'eesz=4M2M,wipe=none,baud=115200'
+        Safe    = 'eesz=4M2M,wipe=none,baud=115200'
+        Erase   = 'eesz=4M2M,wipe=all,baud=921600'
+        AppOffset = '0x0'; OtaMax = 0; Chip = 'esp8266'
+    }
+}
+
+# ---------------------------------------------------------------- output and logging
+function Write-Log([string]$Text) {
+    if (-not (Test-Path $LogDir)) { New-Item -ItemType Directory -Force -Path $LogDir | Out-Null }
+    Add-Content -Path $LogFile -Value $Text
+}
+function Step([string]$Text) { Write-Host ''; Write-Host "==> $Text" -ForegroundColor Cyan; Write-Log "==> $Text" }
+function Ok([string]$Text)   { Write-Host "    [ok] $Text" -ForegroundColor Green; Write-Log "    [ok] $Text" }
+function Info([string]$Text) { Write-Host "    $Text" -ForegroundColor Gray; Write-Log "    $Text" }
+function Warn([string]$Text) { Write-Host "    [!] $Text" -ForegroundColor Yellow; Write-Log "    [!] $Text" }
+function Fail([string]$Text) { throw $Text }
+
+function Confirm-Fix([string]$Question, [switch]$DefaultNo) {
+    if ($Yes) { Info "$Question -> yes (-Yes)"; return $true }
+    if ($DryRun) { Info "[dry run] would ask: $Question"; return $false }
+    $hint = if ($DefaultNo) { '[y/N]' } else { '[Y/n]' }
+    $answer = Read-Host "    $Question $hint"
+    if ($null -eq $answer) { $answer = '' }
+    Write-Log "    ? $Question $hint -> '$answer'"
+    if ($DefaultNo) { return ($answer -match '^\s*[yY]') }
+    return ($answer.Trim() -eq '' -or $answer -match '^\s*[yY]')
+}
+
+# Runs a program, shows and logs its output. Returns the output lines; the exit code is in $script:LastExit.
+function Invoke-Tool {
+    param([string]$Exe, [string[]]$Arguments, [switch]$Quiet, [switch]$ReadOnly)
+    Write-Log "    > $Exe $($Arguments -join ' ')"
+    if ($DryRun -and -not $ReadOnly) { Write-Host "    [dry run] $Exe $($Arguments -join ' ')" -ForegroundColor DarkGray; $script:LastExit = 0; return @() }
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $lines = New-Object System.Collections.Generic.List[string]
+        & $Exe @Arguments 2>&1 | ForEach-Object {
+            # stderr lines arrive as error records; an empty one would print "System.Management.Automation.RemoteException"
+            $text = if ($_ -is [System.Management.Automation.ErrorRecord]) { $_.Exception.Message } else { "$_" }
+            if ($text -eq 'System.Management.Automation.RemoteException') { $text = '' }
+            $text = $text -replace '\x1b\[[0-9;]*m', ''
+            $lines.Add($text)
+            Add-Content -Path $LogFile -Value $text
+            if (-not $Quiet) { Write-Host "    $text" }
+        }
+        $script:LastExit = $LASTEXITCODE
+        return $lines.ToArray()
+    } finally {
+        $ErrorActionPreference = $previous
+    }
+}
+# Read-only queries (installed boards, libraries, ports) also run in a dry run
+function Invoke-Cli([string[]]$Arguments, [switch]$Quiet, [switch]$ReadOnly) {
+    return Invoke-Tool -Exe $CliExe -Arguments (@('--config-file', $CliConfig) + $Arguments) -Quiet:$Quiet -ReadOnly:$ReadOnly
+}
+
+# ---------------------------------------------------------------- set-up: arduino-cli, cores, library
+function Install-Cli {
+    Step "Installing arduino-cli $CliVersion (once)"
+    if ($NoAutoFix) { Fail "arduino-cli is missing ($CliExe)." }
+    if (-not (Confirm-Fix "Download arduino-cli $CliVersion (about 30 MB) into ${CliDir}?")) { Fail 'arduino-cli is needed to build the firmware.' }
+    if ($DryRun) { return }
+    New-Item -ItemType Directory -Force -Path $CliDir | Out-Null
+    $zip = Join-Path $env:TEMP "arduino-cli-$CliVersion.zip"
+    $url = "https://github.com/arduino/arduino-cli/releases/download/v$CliVersion/arduino-cli_${CliVersion}_Windows_64bit.zip"
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Info "Downloading $url"
+    Invoke-WebRequest -Uri $url -OutFile $zip -UseBasicParsing
+    Expand-Archive -Path $zip -DestinationPath $CliDir -Force
+    Remove-Item $zip -Force -ErrorAction SilentlyContinue
+    if (-not (Test-Path $CliExe)) { Fail "arduino-cli.exe was not found after unpacking ($CliDir)." }
+    Ok "arduino-cli installed: $CliExe"
+}
+
+function Write-CliConfig {
+    if ($env:WYLI_TEST_CLI_CONFIG) { return }
+    New-Item -ItemType Directory -Force -Path $CliData | Out-Null
+    $lines = @(
+        'board_manager:',
+        '  additional_urls:',
+        "    - $Esp32Index",
+        "    - $Esp8266Index",
+        'directories:',
+        "  data: '$CliData'",
+        "  downloads: '$(Join-Path $CliData 'staging')'",
+        "  user: '$(Join-Path $CliData 'sketchbook')'",
+        'library:',
+        '  enable_unsafe_install: false'
+    )
+    [IO.File]::WriteAllText($CliConfig, ($lines -join "`n") + "`n", (New-Object Text.UTF8Encoding($false)))
+}
+
+function Test-BoardInstalled([string]$Fqbn) {
+    $out = Invoke-Cli @('board', 'listall') -Quiet -ReadOnly
+    return [bool]($out | Where-Object { $_ -match [regex]::Escape($Fqbn) + '\s*$' })
+}
+
+function Initialize-Tools([string[]]$Need) {
+    Step 'Checking the set-up'
+    if (-not (Test-Path $CliExe)) { Install-Cli } else { Ok "arduino-cli: $CliExe" }
+    Write-CliConfig
+    Ok "Build tools folder: $CliData (the Arduino IDE's own boards are not used)"
+    $indexDone = $false
+    foreach ($b in $Need) {
+        $B_ = $Boards[$b]
+        if (Test-BoardInstalled $B_.Fqbn) { Ok "$($B_.Name) board support installed"; continue }
+        Warn "$($B_.Name) board support ($($B_.Core)) is not installed yet."
+        if ($NoAutoFix) { Fail "Install it with: arduino-cli core install $($B_.Core)" }
+        if (-not (Confirm-Fix "Install $($B_.Core) (a few hundred MB, once)?")) { Fail 'The board support is needed to build.' }
+        if (-not $indexDone) { Invoke-Cli @('core', 'update-index') | Out-Null; $indexDone = $true }
+        Invoke-Cli @('core', 'install', $B_.Core) | Out-Null
+        if ($script:LastExit -ne 0) { Fail "Installing $($B_.Core) failed. Check the internet connection and run this again." }
+        Ok "$($B_.Name) board support installed"
+    }
+    $libs = Invoke-Cli @('lib', 'list') -Quiet -ReadOnly
+    if ($libs | Where-Object { $_ -match '^Adafruit[_ ]NeoPixel\s' }) { Ok 'Adafruit NeoPixel library installed' }
+    else {
+        if ($NoAutoFix) { Fail "Install the library with: arduino-cli lib install `"Adafruit NeoPixel@$NeoPixel`"" }
+        if (-not $indexDone) { Invoke-Cli @('lib', 'update-index') -Quiet | Out-Null }
+        Invoke-Cli @('lib', 'install', "Adafruit NeoPixel@$NeoPixel") | Out-Null
+        if ($script:LastExit -ne 0) { Fail 'Installing the Adafruit NeoPixel library failed.' }
+        Ok "Adafruit NeoPixel $NeoPixel installed"
+    }
+}
+
+# ---------------------------------------------------------------- firmware version, service key
+function Get-FirmwareVersion {
+    $ino = Get-Content -Raw -Path (Join-Path $Sketch 'water_level_indicator.ino')
+    if ($ino -match '#define\s+FW_VERSION\s+"([0-9.]+)"') { return $Matches[1] }
+    Fail 'FW_VERSION was not found in water_level_indicator.ino.'
+}
+
+function Test-ServiceKey {
+    $key = Join-Path $Sketch 'service_secret.h'
+    if (Test-Path $key) { Ok 'Service key found: this firmware can be updated from the app (service login)'; return }
+    Warn 'No service key (water_level_indicator\service_secret.h): this firmware will have no service login,'
+    Warn 'so tanks running it can only be updated by USB.'
+    if ($NoAutoFix -or $DryRun) { return }
+    if (Confirm-Fix 'Create the manufacturer service key now (you get a password to keep safe)?' -DefaultNo) { New-ServiceKey }
+}
+
+function New-ServiceKey {
+    $script_ = Join-Path $PSScriptRoot 'new-service-key.ps1'
+    if (Test-Path (Join-Path $Sketch 'service_secret.h')) {
+        Ok 'A service key exists already. To show its password: tools\new-service-key.bat -Show'
+        return
+    }
+    & $script_
+}
+
+# ---------------------------------------------------------------- build
+function Invoke-Build([string]$b) {
+    $B_ = $Boards[$b]
+    $version = Get-FirmwareVersion
+    $out = [IO.Path]::Combine($OutRoot, $b, $version)
+    Step "Building firmware $version for $($B_.Name)"
+    $args_ = @('compile', '--fqbn', "$($B_.Fqbn):$($B_.Options)", '--output-dir', $out, '--warnings', 'default')
+    if ($env:WYLI_TEST_BUILD_PROPS) { foreach ($p in $env:WYLI_TEST_BUILD_PROPS.Split(';')) { $args_ += @('--build-property', $p) } }
+    $args_ += $Sketch
+    $lines = Invoke-Cli $args_ -Quiet
+    $lines | Where-Object { $_ -match 'error|warning:|Sketch uses|Global variables|IROM|IRAM ' -and $_ -notmatch 'Error initializing instance|SyntaxWarning' } |
+        ForEach-Object { Info $_ }
+    if ($script:LastExit -ne 0) { Fail "The firmware did not compile for $($B_.Name). See the log: $LogFile" }
+    $bin = Join-Path $out 'water_level_indicator.ino.bin'
+    if ($DryRun) { return $out }
+    if (-not (Test-Path $bin)) { Fail "The compiled firmware was not found in $out." }
+    $size = (Get-Item $bin).Length
+    Ok ("Firmware {0}: {1:N0} bytes ({2:N0} KB)" -f $version, $size, [math]::Round($size / 1KB))
+    if ($B_.OtaMax -and $size -gt $B_.OtaMax) { Warn 'Too big for updates over Wi-Fi with the default partition scheme: USB only.' }
+    if ($b -eq 'esp8266' -and $size -gt 500KB) { Info 'NodeMCU: firmware this size is updated by USB (too big for the NodeMCU''s Wi-Fi update space).' }
+
+    # Copy for the Android app (and for FlashBin); earlier versions move to firmware\older\
+    New-Item -ItemType Directory -Force -Path $FwDir | Out-Null
+    $older = Join-Path $FwDir 'older'
+    Get-ChildItem -Path $FwDir -Filter "wtms-$b-*.bin" -File | Where-Object { $_.Name -ne "wtms-$b-$version.bin" } | ForEach-Object {
+        New-Item -ItemType Directory -Force -Path $older | Out-Null
+        Move-Item -Force -Path $_.FullName -Destination $older
+    }
+    $dest = Join-Path $FwDir "wtms-$b-$version.bin"
+    Copy-Item -Force -Path $bin -Destination $dest
+    $sha = (Get-FileHash -Algorithm SHA256 -Path $dest).Hash.ToLower()
+    Add-Content -Path (Join-Path $FwDir 'SHA256SUMS.txt') -Value "$sha  wtms-$b-$version.bin  ($(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
+    Ok "For the Android app and FlashBin: $dest"
+    return $out
+}
+
+# ---------------------------------------------------------------- serial port
+function Get-SerialPorts {
+    $out = Invoke-Cli @('board', 'list', '--format', 'json') -Quiet -ReadOnly
+    $ports = @()
+    try {
+        $json = ($out -join "`n") | ConvertFrom-Json
+        $list = if ($json.PSObject.Properties.Name -contains 'detected_ports') { $json.detected_ports } else { $json }
+        foreach ($d in $list) {
+            if ($d.port.protocol -ne 'serial') { continue }
+            $label = $d.port.label
+            if ($d.port.PSObject.Properties.Name -contains 'properties' -and $d.port.properties) {
+                $p = $d.port.properties
+                if ($p.PSObject.Properties.Name -contains 'vid') { $label += " (USB $($p.vid):$($p.pid))" }
+            }
+            $ports += [pscustomobject]@{ Address = $d.port.address; Label = $label }
+        }
+    } catch { }
+    return ,$ports
+}
+
+function Select-Port {
+    if ($Port) { return $Port }
+    Step 'Finding the board on USB'
+    if ($DryRun) { return 'COM?' }
+    $ports = Get-SerialPorts
+    if ($ports.Count -eq 0) {
+        Warn 'No board found on USB.'
+        Info 'Check: a data USB cable (some cables only charge), the board is powered, and its USB driver is installed:'
+        Info '  CP210x (silver chip "SILABS"): https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers'
+        Info '  CH340 (small chip "CH340"):     https://www.wch-ic.com/downloads/CH341SER_EXE.html'
+        Info 'Device Manager > Ports (COM & LPT) shows the COM number when the board is found.'
+        Fail 'Connect the board and run this again (or give the port: -Port COM5).'
+    }
+    if ($ports.Count -eq 1) { Ok "Board found on $($ports[0].Address) $($ports[0].Label)"; return $ports[0].Address }
+    Write-Host '    Several serial ports were found:'
+    for ($i = 0; $i -lt $ports.Count; $i++) { Write-Host ("      {0}  {1}  {2}" -f ($i + 1), $ports[$i].Address, $ports[$i].Label) }
+    $pick = Read-Host '    Which one is the tank board? (number)'
+    $n = 0
+    if (-not [int]::TryParse($pick, [ref]$n) -or $n -lt 1 -or $n -gt $ports.Count) { Fail 'No port chosen.' }
+    return $ports[$n - 1].Address
+}
+
+# ---------------------------------------------------------------- upload problems
+function Get-UploadDiagnosis([string]$Text) {
+    if ($Text -match 'Wrong boot mode detected|Timed out waiting for packet header|Failed to connect to ESP|No serial data received|Invalid head of packet') {
+        return @{ Key = 'bootmode'
+            Problem = 'The board did not enter upload mode.'
+            Steps = @(
+                'ESP32: unplug the sensor 1 connector (ECHO on D2 can hold the board out of upload mode), then try again.',
+                'Or hold the BOOT button when "Connecting...." appears, until the upload starts.',
+                'Close the Serial Monitor / Arduino IDE if they use the same COM port.') }
+    }
+    if ($Text -match 'The system cannot find the file specified|could not find port|FileNotFoundError|No such file or directory|cannot find the path') {
+        return @{ Key = 'noport'
+            Problem = 'The COM port was not found (board unplugged, or another number).'
+            Steps = @('Re-plug the board; check Device Manager > Ports (COM & LPT).') }
+    }
+    if ($Text -match 'could not open port|Access is denied|PermissionError|port is busy|Resource busy|being used by another') {
+        return @{ Key = 'busy'
+            Problem = 'The COM port is in use by another program.'
+            Steps = @('Close the Arduino IDE Serial Monitor, PuTTY or any other program using the port.') }
+    }
+    if ($Text -match 'MD5 of file does not match|Failed to write to target RAM|A fatal error occurred: Packet content transfer stopped|Hash of data verified.*mismatch') {
+        return @{ Key = 'verify'
+            Problem = 'The written firmware did not verify (often a weak USB cable or power).'
+            Steps = @('Use a short data cable directly on the PC (no hub), and unplug the LED strip while uploading.') }
+    }
+    return $null
+}
+
+# Flash with retries: normal speed, then 115200, then 115200 + DIO 40 MHz (ESP32), explaining each problem
+function Invoke-Upload([string]$b, [string]$InputDir, [string]$PortName, [switch]$Erase) {
+    $B_ = $Boards[$b]
+    $attempts = @(
+        @{ Opt = if ($Erase) { $B_.Erase } else { $B_.Options }; Note = '' },
+        @{ Opt = $B_.Slow; Note = 'slower upload speed (115200)' },
+        @{ Opt = $B_.Safe; Note = 'safe flash settings (DIO, 40 MHz, 115200)' }
+    )
+    for ($i = 0; $i -lt $attempts.Count; $i++) {
+        $a = $attempts[$i]
+        Step ("Flashing {0} on {1}{2}" -f $B_.Name, $PortName, $(if ($a.Note) { " ($($a.Note))" } else { '' }))
+        if (-not $Erase) { Info 'Erase is off: settings, calibration, Wi-Fi, passwords, history and logs are kept.' }
+        $lines = Invoke-Cli @('upload', '-p', $PortName, '--fqbn', "$($B_.Fqbn):$($a.Opt)", '--input-dir', $InputDir, $Sketch)
+        if ($script:LastExit -eq 0) { Ok 'Firmware written and verified. The board restarts with it.'; return }
+        $d = Get-UploadDiagnosis ($lines -join "`n")
+        if (-not $d) { Fail "The upload failed. See the log: $LogFile" }
+        Warn $d.Problem
+        foreach ($s in $d.Steps) { Info "  - $s" }
+        if ($NoAutoFix -or $i -eq $attempts.Count - 1) { Fail "Upload failed: $($d.Problem)" }
+        if ($d.Key -eq 'noport') { Fail 'Connect the board and run this again.' }
+        if (-not $Yes) { Read-Host '    Press Enter to try again' | Out-Null }
+    }
+}
+
+# ---------------------------------------------------------------- tasks
+function Invoke-Flash([string]$b) {
+    if ($b -eq 'both') { Fail 'Flash one board at a time: -Board esp32 or -Board esp8266.' }
+    Initialize-Tools @($b)
+    if ($EraseAll) {
+        Warn 'Erase all: the chip is wiped first. Settings, calibration, Wi-Fi, passwords, history and logs are LOST.'
+        if (-not (Confirm-Fix 'Erase the whole chip and flash?' -DefaultNo)) { Fail 'Cancelled.' }
+    }
+    Test-ServiceKey
+    $version = Get-FirmwareVersion
+    $out = [IO.Path]::Combine($OutRoot, $b, $version)
+    if (-not $NoBuild -or -not (Test-Path (Join-Path $out 'water_level_indicator.ino.bin'))) { $out = Invoke-Build $b }
+    $p = Select-Port
+    Invoke-Upload $b $out $p -Erase:$EraseAll
+    Info 'Next: open the dashboard (or the app) and check the firmware version in Setup > Firmware update.'
+}
+
+function Invoke-FlashBin([string]$b) {
+    if ($b -eq 'both') { Fail 'Flash one board at a time: -Board esp32 or -Board esp8266.' }
+    $B_ = $Boards[$b]
+    Initialize-Tools @($b)
+    $bin = $File
+    if (-not $bin) {
+        $f = Get-ChildItem -Path $FwDir -Filter "wtms-$b-*.bin" -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        if (-not $f) { Fail "No firmware\wtms-$b-*.bin found. Build it first, or give the file: -File <path>." }
+        $bin = $f.FullName
+    }
+    if (-not (Test-Path $bin)) { Fail "File not found: $bin" }
+    $bytes = [IO.File]::ReadAllBytes($bin)
+    $text = [Text.Encoding]::GetEncoding(28591).GetString($bytes)
+    if ($bytes.Length -lt 1024 -or $bytes[0] -ne 0xE9 -or $text -notmatch 'Water Tanks Monitor System ([0-9.]+) \| woodyouloveit\.com \| board (esp32|esp8266)') {
+        Fail 'This is not a Water Tanks Monitor firmware (use wtms-<board>-<version>.bin or water_level_indicator.ino.bin).'
+    }
+    $ver = $Matches[1]; $fileBoard = $Matches[2]
+    if ($fileBoard -ne $b) { Fail "This firmware is for $fileBoard, not $b." }
+    Ok "Firmware $ver for $($B_.Name): $bin"
+    Info "Only the program is written (at $($B_.AppOffset)); settings, calibration, Wi-Fi, passwords, history and logs are kept."
+    Info 'For a blank chip (never flashed), use Flash instead: it also writes the boot loader and partition table.'
+    $esptool = Get-ChildItem -Path (Join-Path $CliData 'packages') -Recurse -Include 'esptool.exe', 'esptool.py' -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.FullName -match [regex]::Escape($B_.Platform.Split(':')[0]) } | Select-Object -First 1
+    if (-not $esptool -and -not $DryRun) { Fail 'esptool was not found in the board support. Run the set-up check (menu 8).' }
+    $p = Select-Port
+    $speeds = @('921600', '115200')
+    foreach ($speed in $speeds) {
+        Step "Writing $([IO.Path]::GetFileName($bin)) on $p at $speed baud"
+        $exe = if ($esptool) { $esptool.FullName } else { 'esptool' }
+        $args_ = @('--chip', $B_.Chip, '--port', $p, '--baud', $speed, '--before', 'default_reset', '--after', 'hard_reset',
+                   'write_flash', '-z', $B_.AppOffset, $bin)
+        if ($exe -like '*.py') { $args_ = @($exe) + $args_; $exe = 'python' }
+        $lines = Invoke-Tool -Exe $exe -Arguments $args_
+        if ($script:LastExit -eq 0) { Ok "Firmware $ver written and verified. The board restarts with it."; return }
+        $d = Get-UploadDiagnosis ($lines -join "`n")
+        if ($d) { Warn $d.Problem; foreach ($s in $d.Steps) { Info "  - $s" } }
+        if ($NoAutoFix -or $speed -eq $speeds[-1] -or ($d -and $d.Key -eq 'noport')) { Fail "The upload failed. See the log: $LogFile" }
+        if (-not $Yes) { Read-Host '    Press Enter to try again at a slower speed' | Out-Null }
+    }
+}
+
+function Invoke-Monitor {
+    Initialize-Tools @()
+    $p = Select-Port
+    Step "Serial monitor on $p at 115200 baud (Ctrl+C to stop)"
+    Info 'The first lines after a restart show the firmware version and board.'
+    if ($DryRun) { return }
+    & $CliExe --config-file $CliConfig monitor -p $p --config 'baudrate=115200'
+}
+
+function Show-Menu {
+    while ($true) {
+        $v = Get-FirmwareVersion
+        Write-Host ''
+        Write-Host '  woodyouloveit - Water Tanks Monitor firmware' -ForegroundColor Cyan
+        Write-Host "  Firmware $v - $Sketch"
+        Write-Host '  ----------------------------------------'
+        Write-Host '   1  Build ESP32 firmware (for the Android app and USB)'
+        Write-Host '   2  Build and flash an ESP32 by USB (keeps settings and history)'
+        Write-Host '   3  Build NodeMCU (ESP8266) firmware'
+        Write-Host '   4  Build and flash a NodeMCU by USB'
+        Write-Host '   5  Build both boards (for the Android app)'
+        Write-Host '   6  Flash a ready firmware .bin by USB (no build)'
+        Write-Host '   7  Serial monitor'
+        Write-Host '   8  Check and fix my set-up (installs anything missing)'
+        Write-Host '   9  Create the manufacturer service key'
+        Write-Host '   0  Exit'
+        $c = Read-Host '  Choose'
+        try {
+            switch ($c) {
+                '1' { Initialize-Tools @('esp32'); Test-ServiceKey; Invoke-Build 'esp32' | Out-Null }
+                '2' { Invoke-Flash 'esp32' }
+                '3' { Initialize-Tools @('esp8266'); Test-ServiceKey; Invoke-Build 'esp8266' | Out-Null }
+                '4' { Invoke-Flash 'esp8266' }
+                '5' { Initialize-Tools @('esp32', 'esp8266'); Test-ServiceKey; Invoke-Build 'esp32' | Out-Null; Invoke-Build 'esp8266' | Out-Null
+                      Info 'Now build the Android app (build-android.bat): it bundles these files.' }
+                '6' { $b = Read-Host '  Board: 1 = ESP32, 2 = NodeMCU'; Invoke-FlashBin $(if ($b -eq '2') { 'esp8266' } else { 'esp32' }) }
+                '7' { Invoke-Monitor }
+                '8' { Initialize-Tools @('esp32', 'esp8266'); Test-ServiceKey; Ok 'Set-up complete' }
+                '9' { New-ServiceKey }
+                '0' { return }
+                default { Warn 'Choose 0 to 9.' }
+            }
+        } catch {
+            Write-Host ''
+            Write-Host "FAILED: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Log "FAILED: $($_.Exception.Message)"
+            Write-Host "Log: $LogFile"
+        }
+    }
+}
+
+# ---------------------------------------------------------------- main
+try {
+    Write-Log "build-firmware $Task board=$Board $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
+    $started = Get-Date
+    $boardsList = if ($Board -eq 'both') { @('esp32', 'esp8266') } else { @($Board) }
+    switch ($Task) {
+        'Menu'       { Show-Menu; exit 0 }
+        'Build'      { Initialize-Tools $boardsList; Test-ServiceKey; foreach ($b in $boardsList) { Invoke-Build $b | Out-Null } }
+        'Flash'      { Invoke-Flash $Board }
+        'FlashBin'   { Invoke-FlashBin $Board }
+        'Monitor'    { Invoke-Monitor }
+        'Doctor'     { Initialize-Tools @('esp32', 'esp8266'); Test-ServiceKey; Ok 'Set-up complete' }
+        'ServiceKey' { New-ServiceKey }
+    }
+    Write-Host ''
+    Write-Host ("Done in {0:mm\:ss}. Log: {1}" -f ((Get-Date) - $started), $LogFile) -ForegroundColor Green
+    exit 0
+} catch {
+    Write-Host ''
+    Write-Host "FAILED: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Log "FAILED: $($_.Exception.Message)"
+    Write-Host "Log: $LogFile"
+    exit 1
+}
