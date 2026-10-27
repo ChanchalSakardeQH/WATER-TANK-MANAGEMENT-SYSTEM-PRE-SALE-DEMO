@@ -657,19 +657,19 @@ const PRESETS=[{cap:150,L:710,W:710,H:400},{cap:225,L:1035,W:725,H:385},{cap:270
 const DEF_SET={brightness:150,low:25,dir:'up',color:'gradient',leds:30,strips:1,zigzag:false,trig:20,fillThr:.5,nightStart:1,nightEnd:5,leak:1.5};
 
 function baseDevices(){return[
-{id:'wing-a',name:'Wing A overhead tank',board:'ESP32 DevKit',fw:'3.4.0',ip:'192.168.0.118',host:'wing-a-tank.local',mac:'24:6F:28:9C:41:E0',serial:'WTMS-32-2611',made:'Aug 2026',heap:'184 KB',flashKB:1408,
+{id:'wing-a',name:'Wing A overhead tank',board:'WTMS Controller',fw:'3.4.0',ip:'192.168.0.118',host:'wing-a-tank.local',mac:'02:1F:6A:9C:41:E0',serial:'WTMS-26-2611',made:'Aug 2026',heap:'184 KB',flashKB:1408,
  wifi:{ssid:'GreenValley-Office',rssi:-64,on:true},usage:'Commercial',location:'Overhead (roof)',shape:'rect',dims:{L:3200,W:2600,H:1600,D:0},depthMm:1400,preset:'custom',
  site:{org:'Green Valley CHS',building:'Wing A',tank:'Overhead tank'},pumpLpm:260,fillTimes:[[5,30],[11,30],[17,0]],
  nightLeaks:[{ago:0,comp:1,lph:40},{ago:5,comp:0,lph:36}],nightDrops:[{ago:3,comp:1,h:3,m:20,L:80}],
  comps:[{name:'Compartment 1',cap:5000,depth:140,fullDist:32,share:.5,dailyUse:7000},{name:'Compartment 2',cap:5000,depth:140,fullDist:32,share:.5,dailyUse:6400}],
  set:{brightness:170,low:30,nightStart:2,nightEnd:5,leak:2.5},selfHeal:1},
-{id:'home',name:'Home loft tank',board:'ESP8266 NodeMCU',fw:'3.4.0',ip:'192.168.1.42',host:'yucca-tank.local',mac:'5C:CF:7F:A1:3B:42',serial:'WTMS-8266-0142',made:'Jul 2026',heap:'27 KB',flashKB:1024,
+{id:'home',name:'Home loft tank',board:'WTMS Controller',fw:'3.4.0',ip:'192.168.1.42',host:'yucca-tank.local',mac:'02:1F:6A:A1:3B:42',serial:'WTMS-26-0142',made:'Jul 2026',heap:'168 KB',flashKB:1024,
  wifi:{ssid:'Home_WiFi',rssi:-58,on:true},usage:'Domestic',location:'Loft / bathroom',shape:'rect',dims:{L:1450,W:915,H:445,D:0},depthMm:405,preset:'500',
  site:{org:'Flat 304, Green Valley CHS',building:'Wing B',tank:'Loft tank'},pumpLpm:22,fillTimes:[[6,15],[19,0]],
  nightLeaks:[{ago:4,comp:0,lph:8}],nightDrops:[{ago:2,comp:0,h:2,m:40,L:22}],
  comps:[{name:'Tank',cap:500,depth:40.5,fullDist:27,share:1,dailyUse:520,cal:{full:28.4,empty:67.5}}],
  set:{brightness:120,low:25,color:'status'},selfHeal:0},
-{id:'sump',name:'Underground sump',board:'ESP32 DevKit',fw:'3.4.0',ip:'192.168.0.121',host:'sump-tank.local',mac:'24:6F:28:9C:52:1A',serial:'WTMS-32-2614',made:'Aug 2026',heap:'191 KB',flashKB:1408,
+{id:'sump',name:'Underground sump',board:'WTMS Controller',fw:'3.4.0',ip:'192.168.0.121',host:'sump-tank.local',mac:'02:1F:6A:9C:52:1A',serial:'WTMS-26-2614',made:'Aug 2026',heap:'191 KB',flashKB:1408,
  wifi:{ssid:'GreenValley-Office',rssi:-71,on:true},usage:'Commercial',location:'Underground sump',shape:'rect',dims:{L:5000,W:4000,H:2200,D:0},depthMm:1900,preset:'custom',
  site:{org:'Green Valley CHS',building:'Common area',tank:'Underground sump'},pumpLpm:420,fillTimes:[[5,30],[14,0]],
  nightLeaks:[],nightDrops:[{ago:1,comp:0,h:3,m:5,L:700}],
@@ -1038,7 +1038,7 @@ function renderSetup(){
   h+=`<div class="card"><h3>Sensors and compartments</h3>
    <label class="f"><span>Ultrasonic sensors on this tank</span><select data-act="ncomp" ${dis}>${[1,2,3,4].map(n=>`<option ${n===dev.comps.length?'selected':''}>${n}</option>`).join('')}</select><small>One sensor per compartment. Each compartment gets its own calibration, LED strip and analytics.</small></label>
    ${dev.comps.map((x,i)=>`<label class="f"><span>Name of sensor ${i+1}</span><input type="text" value="${esc(x.name)}" data-cname="${i}" ${dis}></label>`).join('')}
-   <dl class="kv"><dt>Sensor 1 wiring</dt><dd>${dev.board.startsWith('ESP32')?'TRIG G17, ECHO G18, LED data G16':'TRIG D5, ECHO D6, LED data D2'}</dd><dt>Sensor type</dt><dd>Waterproof ultrasonic (JSN-SR04T / AJ-SR04M)</dd></dl>
+   <dl class="kv"><dt>Sensor type</dt><dd>Waterproof ultrasonic</dd></dl>
    <button class="btn" data-act="sensorTest">Run sensor test</button></div>`;
   h+=`</div><div class="grid2" style="margin-bottom:16px">`;
   // calibration
@@ -1070,7 +1070,7 @@ function renderSetup(){
    <div class="f3"><label class="f"><span>LEDs per strip</span><input type="number" min="8" max="60" value="${s.leds}" data-set="leds" ${dis}></label>
    <label class="f"><span>Chained strips</span><select data-set="strips" ${dis}>${[1,2,3].map(n=>`<option ${n===s.strips?'selected':''}>${n}</option>`).join('')}</select></label>
    <label class="f"><span>Wiring</span><select data-set="zigzag" ${dis}><option value="false" ${!s.zigzag?'selected':''}>Straight</option><option value="true" ${s.zigzag?'selected':''}>Zig-zag</option></select></label></div>
-   <label class="f"><span>Sensor trigger pulse (µs)</span><input type="number" min="10" max="50" value="${s.trig}" data-set="trig" ${dis}><small>AJ-SR04M usually needs 20 µs or more</small></label>
+   <label class="f"><span>Sensor trigger pulse (µs)</span><input type="number" min="10" max="50" value="${s.trig}" data-set="trig" ${dis}><small>Waterproof sensors usually need 20 µs or more</small></label>
    <button class="btn" data-act="defaults" ${dis}>Reset display to defaults</button></div>`;
   h+=`</div><div class="grid2" style="margin-bottom:16px">`;
   // wifi
@@ -1079,14 +1079,14 @@ function renderSetup(){
    <div class="row"><button class="btn" data-act="scan" ${dis}>Scan networks</button>${dev.wifi.on?`<button class="btn warn" data-act="forget" ${dis}>Forget network</button>`:''}</div>
    <div id="netArea"></div></div>`;
   // device
-  h+=`<div class="card"><h3>Device</h3><dl class="kv"><dt>Board</dt><dd>${dev.board}</dd><dt>Firmware</dt><dd>${dev.fw}</dd><dt>Running for</dt><dd id="uptime">${fDur((state.simNow-dev.st.bootAt)/MIN)}</dd>
+  h+=`<div class="card"><h3>Device</h3><dl class="kv"><dt>Controller</dt><dd>${dev.board}</dd><dt>Firmware</dt><dd>${dev.fw}</dd><dt>Running for</dt><dd id="uptime">${fDur((state.simNow-dev.st.bootAt)/MIN)}</dd>
    <dt>Free memory</dt><dd>${dev.heap}</dd><dt>Restarts</dt><dd>${dev.restarts} (self-healing: ${dev.selfHeal+(dev.st.healed?1:0)})</dd><dt>MAC</dt><dd>${dev.mac}</dd></dl>
    <div class="row"><button class="btn" data-act="restart" ${dis}>Restart device</button><button class="btn" data-act="sensorTest">Run sensor test</button></div></div>`;
   h+=`</div>`;
   // storage
   const pts=dev.comps.reduce((a,x)=>a+x.ht.length,0),kb=Math.round(pts*8/1024+dev.fills.length*0.05+dev.log.length*0.06),cap=Math.round(dev.flashKB*.6);
   h+=`<div class="card"><h3>Storage and history</h3><div class="meter"><i style="width:${Math.min(100,kb/cap*100)}%"></i></div>
-   <p class="muted" style="margin:0 0 10px;font-size:.92rem">${kb} KB of ${cap} KB used. Retention is sized to this board’s free flash.</p>
+   <p class="muted" style="margin:0 0 10px;font-size:.92rem">${kb} KB of ${cap} KB used. Retention is sized to this controller’s free storage.</p>
    <dl class="kv"><dt>History kept</dt><dd>14 days, a level every 2 minutes</dd><dt>Readings stored</dt><dd>${nf.format(pts)}</dd><dt>Fills recorded</dt><dd>${dev.fills.length}</dd><dt>Log entries</dt><dd>${dev.log.length}</dd></dl>
    <p class="muted" style="margin:0;font-size:.92rem">History is stored as sensor distance, so re-calibrating later also corrects old readings.</p></div>`;
   sec.innerHTML=h;
@@ -1140,7 +1140,7 @@ function renderService(){
    <dl class="kv"><dt>On the device</dt><dd>${dev.fw}</dd><dt>Bundled with this app</dt><dd>${NEW_FW} (sample update for the demo)</dd></dl>
    <div class="fwbox" id="fwbox">${upToDate?`<div class="alert ok"><b>Up to date</b>The device runs the firmware bundled with this app.</div>`:
    `<p style="margin:0;font-size:.95rem">The device keeps its settings, calibration and history through the update. Keep it powered until it restarts.</p><button class="btn pri" data-act="fw">Install ${NEW_FW}</button>`}</div></div>
-   <div class="card"><h3>Device identity</h3><dl class="kv"><dt>Serial</dt><dd>${dev.serial}</dd><dt>Board</dt><dd>${dev.board}</dd><dt>MAC</dt><dd>${dev.mac}</dd><dt>Manufactured</dt><dd>${dev.made}</dd><dt>Installed at</dt><dd>${esc(dev.site.org)}, ${esc(dev.site.building)}</dd></dl>
+   <div class="card"><h3>Device identity</h3><dl class="kv"><dt>Serial</dt><dd>${dev.serial}</dd><dt>Controller</dt><dd>${dev.board}</dd><dt>MAC</dt><dd>${dev.mac}</dd><dt>Manufactured</dt><dd>${dev.made}</dd><dt>Installed at</dt><dd>${esc(dev.site.org)}, ${esc(dev.site.building)}</dd></dl>
    <p class="muted" style="margin:0;font-size:.92rem">The Service key is stored on the device only as a salted hash.</p></div></div>`;
 }
 function runFw(){

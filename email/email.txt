@@ -1,0 +1,53 @@
+EVERY DROP COUNTS.
+Save precious water, and the electricity that pumps it.
+
+Dear Committee Members,
+
+Every society knows the routine. Someone climbs to the terrace or opens the sump to check the water. The motor keeps running after the tank is full, and water pours out of the overflow pipe. Residents find out the tank is empty when the taps run dry.
+
+The Water Tanks Monitor System ends the guesswork. It shows the level of every tank on every member's phone, warns before trouble, and records every litre used and every minute the motor runs.
+
+SAVE PRECIOUS WATER
+- See the level before a tank overflows, so the motor is switched off on time
+- The night leak check flags hidden losses, like a running flush tank or a leaking float valve
+- Daily use per tank, so waste stands out and can be fixed
+
+SAVE ELECTRICITY
+- Every overflow also wastes the power that pumped the water up
+- The motor runs only as long as needed, not "until someone notices"
+- Every motor run and its minutes are recorded, day by day
+
+For example: a 1 HP pump (about 0.75 kW) that runs just 15 minutes too long every day uses about 68 kWh of electricity a year, for nothing. If it pumps 100 litres a minute, those 15 minutes send 1,500 litres down the overflow, every time. (Illustration only: your pump size, flow and timings will differ.)
+
+FOR THE COMMITTEE
+- Decide with numbers, not complaints: daily use, fills and motor time per tank
+- PDF reports ready for committee meetings and the AGM
+- Alerts for low water, sensor faults and filling
+- Your data stays with the society: no cloud account
+
+FOR EVERY MEMBER
+- Check the water level on your phone, any time, from home
+- No more surprises when the taps run dry
+- Nobody has to climb to the terrace or open the sump to check
+- A colour LED level bar where people pass, so everyone can see the level
+
+HOW IT WORKS
+Sensor: above the water in each tank or compartment.
+Controller: works out level and litres; keeps months of history.
+Level bar: a colour LED bar where people pass.
+Phones: live in the app or a browser, for every member.
+
+FROM SURVEY TO SAVINGS
+1. Site survey: tanks, sumps, power and Wi-Fi.
+2. Installation: tanks stay in use; no emptying.
+3. Set-up and training: for the committee, in one session.
+4. Support: updates and service visits.
+
+GET A QUOTE FOR YOUR SOCIETY
+Book a site survey: we look at your tanks and send a quote.
+WhatsApp: +91 92848 17975  (https://wa.me/919284817975?text=Hi%2C%20please%20send%20a%20quote%20for%20the%20Water%20Tanks%20Monitor.%20%28Ref%3A%20Email%29)
+Send your society's details: https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO/#contact
+Try the live demo: https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO/
+
+Water Tanks Monitor System by woodyouloveit.com
+If you'd rather not hear from us, reply with "Unsubscribe" and we won't write again.

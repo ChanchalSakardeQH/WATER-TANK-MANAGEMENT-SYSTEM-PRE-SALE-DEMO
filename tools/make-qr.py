@@ -30,6 +30,7 @@ CODES = {
     "whatsapp-sticker"   : (whatsapp("Sticker"),      "WhatsApp chat", "Stickers: lift, pump room, tank room, meter room"),
     "whatsapp-card"      : (whatsapp("Visiting card"),"WhatsApp chat", "Visiting cards"),
     "whatsapp-website"   : (whatsapp("Website"),      "WhatsApp chat", "Live demo page, shown on computers and projectors"),
+    "whatsapp-email"     : (whatsapp("Email"),        "WhatsApp chat", "Promotional email"),
     "live-demo"          : (DEMO_URL,                 "Live demo",     "Brochure front, poster, flyers, slides"),
     "contact-form"       : (DEMO_URL + "#contact",    "Contact us form on the live demo", "Anywhere people should fill in society details"),
 }

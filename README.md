@@ -39,6 +39,7 @@
 - [Building on Windows](#building-on-windows)
 - [Project layout](#project-layout)
 - [QR codes and print kit](#qr-codes-and-print-kit)
+- [Promotional email](#promotional-email)
 - [Brochure](#brochure)
 - [Get a quote](#get-a-quote)
 
@@ -180,6 +181,7 @@ tools/get-build-script.ps1         copies and adapts the Water Tanks Monitor bui
 docs/                              images used in this README
 qr/                                QR codes (SVG and PNG) for print and the web
 print/                             QR print kit: poster, flyers, stickers, visiting cards
+email/                             promotional email for societies (HTML, plain text, how to send)
 tools/make-qr.py                   remakes the QR codes if the number or web address changes
 android/
   app/src/main/assets/demo/        the demo page (index.html) and its fonts, bundled for offline use
@@ -205,6 +207,7 @@ Every printed piece has a QR code, so people can contact us with one scan. The W
 | [`whatsapp-sticker`](qr/whatsapp-sticker.svg) | WhatsApp chat, *Ref: Sticker* | Lift, pump room, tank room, meter room | 25 mm |
 | [`whatsapp-card`](qr/whatsapp-card.svg) | WhatsApp chat, *Ref: Visiting card* | Visiting cards | 25 mm |
 | [`whatsapp-website`](qr/whatsapp-website.svg) | WhatsApp chat, *Ref: Website* | Live demo page on computers and projectors, this README | 25 mm |
+| [`whatsapp-email`](qr/whatsapp-email.svg) | WhatsApp chat, *Ref: Email* | Promotional email | 25 mm |
 | [`live-demo`](qr/live-demo.svg) | The live demo | Brochure front, poster, flyers, slides | 20 mm |
 | [`contact-form`](qr/contact-form.svg) | The live demo's Contact us form | Anywhere society details should be filled in | 20 mm |
 
@@ -224,6 +227,15 @@ Print at **100 % (actual size)**, never "fit to page", and test-scan one printed
 
 **Changing the number or the web address:** edit `NUMBER` or `DEMO_URL` at the top of `tools/make-qr.py`, then run
 `pip install segno` and `python tools/make-qr.py`. All the codes in `qr/` are remade; reprint the pieces that use them.
+
+## Promotional email
+
+A ready-to-send email for society committees, built around the two big savings: **water, and the electricity that pumps it**.
+It covers the benefits for the committee and for every member, a worked example of what one forgotten motor costs,
+how it works, and a WhatsApp button and QR code for a quote.
+
+- [View the email](https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO/email/) (after GitHub Pages is on)
+- [`email/README.md`](email/README.md): subject lines, preview text and how to send it from Gmail or a mailing tool
 
 ## Brochure
 

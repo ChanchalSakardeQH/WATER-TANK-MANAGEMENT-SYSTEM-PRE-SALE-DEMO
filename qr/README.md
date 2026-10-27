@@ -10,6 +10,7 @@ One QR code per place it's used. Scan any of them with a phone camera to test.
 | `whatsapp-sticker` | WhatsApp chat, *Ref: Sticker* | Lift, pump room, tank room, meter room |
 | `whatsapp-card` | WhatsApp chat, *Ref: Visiting card* | Visiting cards |
 | `whatsapp-website` | WhatsApp chat, *Ref: Website* | Live demo page, README, slides |
+| `whatsapp-email` | WhatsApp chat, *Ref: Email* | Promotional email (`../email/`) |
 | `live-demo` | https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO/ | Brochure front, poster, flyers |
 | `contact-form` | The live demo's Contact us form (`#contact`) | Anywhere society details should be filled in |
 

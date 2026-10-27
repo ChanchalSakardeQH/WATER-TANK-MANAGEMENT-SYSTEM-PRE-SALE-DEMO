@@ -41,6 +41,13 @@
     "version": 8,
     "min_print_mm": 24
   },
+  "whatsapp-email": {
+    "link": "https://wa.me/919284817975?text=Hi%2C%20please%20send%20a%20quote%20for%20the%20Water%20Tanks%20Monitor.%20%28Ref%3A%20Email%29",
+    "opens": "WhatsApp chat",
+    "where": "Promotional email",
+    "version": 8,
+    "min_print_mm": 24
+  },
   "live-demo": {
     "link": "https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO/",
     "opens": "Live demo",
