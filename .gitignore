@@ -1,0 +1,7 @@
+# Android build files and this PC's SDK path: not needed in the repository
+android/local.properties
+android/.gradle/
+android/build/
+android/app/build/
+release/logs/
+*.jks

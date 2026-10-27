@@ -66,7 +66,9 @@ if ($text.Contains('com.woodyouloveit.wtms.demo')) {
 # Old text, new text, required?
 $changes = @(
     @("'com.woodyouloveit.wtms'",              "'com.woodyouloveit.wtms.demo'",              $true,  'app ID'),
-    @('woodyouloveit-wtms-',                   'woodyouloveit-wtms-demo-',                   $true,  'output file names'),
+    @("= 'woodyouloveit-wtms'",                "= 'woodyouloveit-wtms-demo'",                $false, 'output file names'),
+    @('woodyouloveit-wtms-$',                  'woodyouloveit-wtms-demo-$',                  $false, 'output file names (older script)'),
+    @("= 'Water Tanks Monitor'",               "= 'WTMS Demo'",                              $false, 'app name'),
     @('Water Tanks Monitor - Android build',   'Water Tanks Monitor DEMO - Android build',   $false, 'menu title'),
     @('Water Tanks Monitor Android build',     'Water Tanks Monitor DEMO Android build',     $false, 'log title')
 )
@@ -81,6 +83,7 @@ foreach ($c in $changes) {
     $text = $text.Replace($c[0], $c[1])
     Write-Host ("  OK {0}: {1} change(s)" -f $c[3], $n) -ForegroundColor Green
 }
+if (-not $text.Contains("woodyouloveit-wtms-demo")) { $missing += 'output file names' }
 if ($missing.Count -gt 0) {
     Write-Host ''
     Write-Host ("  [!] Could not adapt: {0}. The script was not copied." -f ($missing -join ', ')) -ForegroundColor Yellow

@@ -17,6 +17,15 @@
   <img alt="For cooperative housing societies" src="https://img.shields.io/badge/for-housing%20societies-D23A6E">
 </p>
 
+<p align="center"><b><a href="https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO/">▶ Try the live demo</a></b></p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="qr/live-demo.png" alt="QR code: live demo" width="140"><br><b>Scan to try the live demo</b></td>
+    <td align="center"><img src="qr/whatsapp-website.png" alt="QR code: WhatsApp us" width="140"><br><b>Scan to WhatsApp us</b></td>
+  </tr>
+</table>
+
 ---
 
 ## Contents
@@ -29,6 +38,7 @@
 - [Screenshots](#screenshots)
 - [Building on Windows](#building-on-windows)
 - [Project layout](#project-layout)
+- [QR codes and print kit](#qr-codes-and-print-kit)
 - [Brochure](#brochure)
 - [Get a quote](#get-a-quote)
 
@@ -168,6 +178,9 @@ The `android\` folder also opens directly in Android Studio.
 build-android.bat                  menu and build launcher
 tools/get-build-script.ps1         copies and adapts the Water Tanks Monitor build script
 docs/                              images used in this README
+qr/                                QR codes (SVG and PNG) for print and the web
+print/                             QR print kit: poster, flyers, stickers, visiting cards
+tools/make-qr.py                   remakes the QR codes if the number or web address changes
 android/
   app/src/main/assets/demo/        the demo page (index.html) and its fonts, bundled for offline use
   app/src/main/java/com/woodyouloveit/wtms/demo/
@@ -178,9 +191,44 @@ android/
   app/src/main/res/                colours, splash, launcher icon, form layout, texts
 ```
 
+## QR codes and print kit
+
+Every printed piece has a QR code, so people can contact us with one scan. The WhatsApp codes open a chat to
++91 92848 17975 with the message already typed, ending with where it was scanned, for example
+*"Hi, please send a quote for the Water Tanks Monitor. (Ref: Notice board)"*. Each enquiry tells you which place works best.
+
+| QR code | Opens | Where it's used | Smallest print size |
+|---|---|---|---|
+| [`whatsapp-brochure`](qr/whatsapp-brochure.svg) | WhatsApp chat, *Ref: Brochure* | Society brochure, back page | 25 mm |
+| [`whatsapp-poster`](qr/whatsapp-poster.svg) | WhatsApp chat, *Ref: Notice board* | A4 notice-board poster | 25 mm |
+| [`whatsapp-flyer`](qr/whatsapp-flyer.svg) | WhatsApp chat, *Ref: Flyer* | A6 flyers, letterbox drops | 25 mm |
+| [`whatsapp-sticker`](qr/whatsapp-sticker.svg) | WhatsApp chat, *Ref: Sticker* | Lift, pump room, tank room, meter room | 25 mm |
+| [`whatsapp-card`](qr/whatsapp-card.svg) | WhatsApp chat, *Ref: Visiting card* | Visiting cards | 25 mm |
+| [`whatsapp-website`](qr/whatsapp-website.svg) | WhatsApp chat, *Ref: Website* | Live demo page on computers and projectors, this README | 25 mm |
+| [`live-demo`](qr/live-demo.svg) | The live demo | Brochure front, poster, flyers, slides | 20 mm |
+| [`contact-form`](qr/contact-form.svg) | The live demo's Contact us form | Anywhere society details should be filled in | 20 mm |
+
+Each code is in [`qr/`](qr/) as **SVG** (vector, for print shops and design tools) and **PNG** (1200 px, for Word, slides
+and WhatsApp status). See [`qr/README.md`](qr/README.md) for printing tips.
+
+**Print kit:** [Water Tanks Monitor – QR print kit (A4).pdf](print/Water%20Tanks%20Monitor%20%E2%80%93%20QR%20print%20kit%20%28A4%29.pdf) has four ready-to-print A4 pages:
+
+| Page | What it is | Print on |
+|---|---|---|
+| 1 | Notice-board poster with an 82 mm WhatsApp QR and a live demo QR | A4 paper or card |
+| 2 | 4 × A6 flyers with cut lines | A4 paper |
+| 3 | 12 stickers, 62 × 66 mm, with cut lines | A4 sticker paper |
+| 4 | 10 visiting cards, 85 × 55 mm, with cut lines | 300 gsm card |
+
+Print at **100 % (actual size)**, never "fit to page", and test-scan one printed copy before a large print run.
+
+**Changing the number or the web address:** edit `NUMBER` or `DEMO_URL` at the top of `tools/make-qr.py`, then run
+`pip install segno` and `python tools/make-qr.py`. All the codes in `qr/` are remade; reprint the pieces that use them.
+
 ## Brochure
 
-The two-page A4 society brochure, for printing or sharing with committees.
+The two-page A4 society brochure, for printing or sharing with committees: [download the PDF](Water%20Tanks%20Monitor%20System%20%E2%80%93%20Society%20Brochure%20%28A4%29.pdf).
+The front has a QR code for the live demo, and the back has a QR code that opens WhatsApp for a quote.
 
 | Front | Back |
 |:---:|:---:|
@@ -190,7 +238,10 @@ The two-page A4 society brochure, for printing or sharing with committees.
 
 **Get a quote for your society.** Book a site survey: we look at your tanks and send a quote.
 
+<img src="qr/whatsapp-website.png" alt="QR code: WhatsApp us" width="150">
+
 - WhatsApp: [+91 92848 17975](https://wa.me/919284817975)
+- Live demo: [https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO](https://chanchalsakardeqh.github.io/WATER-TANK-MANAGEMENT-SYSTEM-PRE-SALE-DEMO/)
 - Website: [woodyouloveit.com](https://woodyouloveit.com)
 
 ---

@@ -47,9 +47,9 @@ small{font-size:.85rem}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
 .demo-strip{background:var(--pink-soft);color:var(--ink);font-size:.9rem;padding:6px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
 .demo-strip b{color:var(--pink)}
+.cta{background:var(--pink);color:#fff;border:0;border-radius:999px;padding:3px 12px;font-weight:600;cursor:pointer}
 .inapp .brand{display:none}
 .inapp .devpick{margin-right:auto}
-.cta{background:var(--pink);color:#fff;border:0;border-radius:999px;padding:3px 12px;font-weight:600;cursor:pointer}
 .linkbtn{background:none;border:0;padding:2px 0;color:var(--pink);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .bar{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;margin-right:auto}
@@ -66,6 +66,70 @@ small{font-size:.85rem}
 .tabs button{background:none;border:0;padding:10px 14px 12px;font-weight:600;color:var(--ink-2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
 .tabs button[aria-selected="true"]{color:var(--teal);border-bottom-color:var(--teal)}
 .tabs .lock{font-size:.8em;opacity:.7}
+.tabs .tab-cta{color:var(--pink)}
+.tabs .tab-cta[aria-selected="true"]{color:var(--pink);border-bottom-color:var(--pink)}
+body.nodock{padding-bottom:28px}
+body.nodock .dock{display:none}
+/* about */
+.hero{background:var(--tk-bg);color:var(--tk-ink);border-radius:24px;padding:30px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.6fr);gap:24px;align-items:center;margin-bottom:8px}
+.hero .kicker{color:#7ED9DB;font-weight:600}
+.hero h2{font-size:clamp(2.5rem,7vw,4rem);font-weight:800;line-height:.95;margin:8px 0 12px;letter-spacing:-.01em}
+.hero .sub{font-family:var(--fd);font-size:1.4rem;font-weight:600;line-height:1.2;margin:0 0 10px}
+.hero p{color:var(--tk-ink-2);max-width:58ch;margin:0 0 18px}
+.hero .mascot{display:flex;justify-content:center}
+.hero .mascot svg{width:100%;max-width:170px;height:auto}
+.btn.wa{background:#1E9E52;border-color:#1E9E52;color:#fff}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,.4);color:#fff}
+.sec-title{margin:30px 0 12px;font-size:1.45rem}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mini{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--pink);border-radius:12px;padding:12px 14px}
+.mini.t{border-top-color:var(--teal)}
+.mini b{display:block;font-family:var(--fd);font-size:1.06rem;margin-bottom:2px}
+.mini p{margin:0;color:var(--ink-2)}
+.ticks{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.ticks li{padding-left:24px;position:relative}
+.ticks li::before{content:"✓";position:absolute;left:2px;color:var(--teal);font-weight:700}
+.ticks.p li::before{color:var(--pink)}
+.save .card{border-top:4px solid var(--teal);margin-bottom:0}
+.save .card.e{border-top-color:var(--pink)}
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.flow4 .mini{border-top-color:var(--water)}
+.flow4 .mini.last{background:var(--tk-bg);color:var(--tk-ink);border-color:var(--tk-bg)}
+.flow4 .mini.last p{color:var(--tk-ink-2)}
+.feat{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px 18px}
+.steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.steps4 .n{font-family:var(--fd);font-size:2.2rem;font-weight:800;color:var(--teal);line-height:1}
+.steps4 b{display:block;font-family:var(--fd);font-size:1.08rem;margin:4px 0 2px}
+.steps4 p{margin:0;color:var(--ink-2)}
+.quote{background:var(--tk-bg);color:var(--tk-ink);border-radius:20px;padding:24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:space-between;margin-top:30px}
+.quote h3{font-size:1.5rem;margin-bottom:4px}
+.quote p{margin:0;color:var(--tk-ink-2)}
+.quote a{color:#7ED9DB;font-weight:600}
+.foot{color:var(--ink-2);font-size:.85rem;text-align:center;margin:26px 0 0}
+/* contact */
+.contact-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+.contact-grid > .card{margin-bottom:0}
+.formsec{font-family:var(--fd);font-size:1.12rem;color:var(--teal);margin:18px 0 8px}
+.formsec:first-of-type{margin-top:0}
+.f textarea{min-height:76px;resize:vertical;font:inherit}
+.pfx{display:flex;align-items:stretch}
+.pfx span{display:flex;align-items:center;padding:0 10px;border:1px solid var(--line);border-right:0;border-radius:9px 0 0 9px;background:var(--surface);color:var(--ink-2);font-weight:600}
+.pfx input{border-radius:0 9px 9px 0!important}
+.ferr{color:var(--red);font-size:.86rem;min-height:0}
+.f.invalid input,.f.invalid select,.f.invalid textarea{border-color:var(--red)!important}
+.check{display:flex;gap:10px;align-items:flex-start;margin:6px 0 4px}
+.check input{width:18px;height:18px;margin-top:3px;accent-color:var(--teal);flex:none}
+.side .kv{margin-top:6px}
+.qrpair{display:flex;gap:14px;flex-wrap:wrap}
+.qrfig{background:#fff;border-radius:12px;padding:8px 8px 7px;text-align:center;margin:0;width:176px}
+.qrfig img{width:160px;height:160px;display:block}
+.qrfig figcaption{font-family:var(--fd);font-weight:700;color:#0B3B39;font-size:.86rem;line-height:1.2;margin-top:4px}
+.qrside{display:flex;gap:12px;align-items:center;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px;margin:4px 0 10px}
+.qrside img{width:132px;height:132px;flex:none;border-radius:6px;background:#fff}
+.qrside p{margin:0;font-size:.92rem}
+@media (max-width:860px){.qrpair,.qrside{display:none}}
+.inapp .qrpair,.inapp .qrside{display:none}
+.wa-link{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:#1E9E52;text-decoration:none;font-size:1.15rem}
 
 main{max-width:1120px;margin:0 auto;padding:18px 16px}
 .tab[hidden]{display:none}
@@ -174,7 +238,7 @@ td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 .f{display:grid;gap:4px;margin-bottom:12px}
 .f > span{font-size:.88rem;font-weight:600}
 .f small{color:var(--ink-2)}
-.f input[type=text],.f input[type=number],.f input[type=password],.f select{border:1px solid var(--line);background:var(--surface-2);border-radius:9px;padding:8px 10px;width:100%}
+.f input[type=text],.f input[type=number],.f input[type=password],.f input[type=tel],.f input[type=email],.f textarea,.f select{border:1px solid var(--line);background:var(--surface-2);border-radius:9px;padding:8px 10px;width:100%}
 .f input:disabled,.f select:disabled{opacity:.6}
 .f3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .f2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -246,16 +310,21 @@ input[type=range]{width:100%;accent-color:var(--teal)}
 
 @media (max-width:860px){
   .ov,.grid2{grid-template-columns:1fr}
+  .hero,.contact-grid{grid-template-columns:1fr}
+  .hero .mascot{display:none}
+  .cards3,.steps4,.flow4{grid-template-columns:1fr 1fr}
   .bignum .pct{font-size:4rem}
   .f3{grid-template-columns:1fr 1fr}
 }
 @media (max-width:520px){
   .top{position:static}
+  .cards3,.steps4,.flow4,.f2{grid-template-columns:1fr}
+  .hero{padding:22px}
+  .inapp .conn{margin-right:auto}
+  .dock{gap:5px;padding:6px 8px}
   .bar{gap:8px}
   .brand small{display:none}
   .devpick{order:3;width:100%}
-  .inapp .conn{margin-right:auto}
-  .dock{gap:5px;padding:6px 8px}
   .devpick select{max-width:none;width:100%}
   .ledcols{height:190px}
   .leds{padding:22px 0 26px}
@@ -283,7 +352,7 @@ input[type=range]{width:100%;accent-color:var(--teal)}
   <div class="demo-strip"><span><b>Demo</b> with sample data. No real tank is connected.</span>
     <button class="linkbtn" id="tourBtn">How this demo works</button>
     <button class="linkbtn" id="resetBtn">Reset demo</button>
-    <button class="cta" id="contactBtn" data-act="contact" hidden>Contact us</button></div>
+    <button class="cta" id="contactBtn" data-act="contact">Contact us</button></div>
   <div class="bar">
     <div class="brand">
       <svg viewBox="0 0 84 100" aria-hidden="true"><use href="#mascot"/></svg>
@@ -299,6 +368,8 @@ input[type=range]{width:100%;accent-color:var(--teal)}
     <button role="tab" data-tab="setup" aria-selected="false">Setup</button>
     <button role="tab" data-tab="log" aria-selected="false">Log</button>
     <button role="tab" data-tab="service" aria-selected="false">Service <span class="lock" id="svcLock">🔒</span></button>
+    <button role="tab" data-tab="about" aria-selected="false">About</button>
+    <button role="tab" data-tab="contact" aria-selected="false" class="tab-cta" id="contactTab">Contact us</button>
   </nav>
 </header>
 
@@ -391,6 +462,152 @@ input[type=range]{width:100%;accent-color:var(--teal)}
 
   <!-- SERVICE -->
   <section class="tab" id="t-service" role="tabpanel" aria-label="Service" hidden></section>
+
+  <!-- ABOUT -->
+  <section class="tab" id="t-about" role="tabpanel" aria-label="About the Water Tanks Monitor System" hidden>
+    <div class="hero">
+      <div>
+        <div class="kicker">Water Tanks Monitor System, for cooperative housing societies</div>
+        <h2>Every drop counts.</h2>
+        <p class="sub">Save precious water, and electricity.</p>
+        <p>Live tank levels on every phone, so tanks stop overflowing and running dry, the motor runs only as long as needed, and the committee gets clear reports.</p>
+        <div class="row"><button class="btn pri" data-go="overview" style="background:var(--water);border-color:var(--water);color:#06262c">Try the live demo</button>
+          <button class="btn ghost" data-act="contact">Get a quote</button></div>
+      </div>
+      <div class="mascot"><svg viewBox="0 0 84 100" class="mascot-anim" role="img" aria-label="Smiling water drop mascot"><use href="#mascot"/></svg></div>
+    </div>
+
+    <h2 class="sec-title">The water worries every society knows</h2>
+    <div class="cards3">
+      <div class="mini"><b>Tanks overflow</b><p>Water, and the electricity that pumped it, go down the drain.</p></div>
+      <div class="mini"><b>Tanks run dry</b><p>Residents find out when the taps stop.</p></div>
+      <div class="mini"><b>Climbing to check</b><p>Someone goes up to the roof or opens the sump.</p></div>
+      <div class="mini t"><b>Motor left on</b><p>Nobody knows how long it ran.</p></div>
+      <div class="mini t"><b>Hidden leaks</b><p>A slow loss at night goes unnoticed for weeks.</p></div>
+      <div class="mini t"><b>No numbers</b><p>The committee has complaints, not data.</p></div>
+    </div>
+
+    <h2 class="sec-title">Save precious water, and the electricity that pumps it</h2>
+    <div class="grid2 save">
+      <div class="card"><h3>Precious water</h3><ul class="ticks">
+        <li>See the level before a tank overflows</li>
+        <li>The night leak check flags hidden losses early</li>
+        <li>Daily use per tank, so waste stands out</li></ul></div>
+      <div class="card e"><h3>Electricity</h3><ul class="ticks p">
+        <li>Every overflow also wastes the power that pumped it up</li>
+        <li>See when a tank is nearly full, and switch the motor off on time</li>
+        <li>Every motor run and its minutes are recorded</li></ul></div>
+    </div>
+    <div class="grid2" style="margin-top:12px">
+      <div class="mini t"><b>Save effort</b><p>No roof climbing: everyone checks on their phone.</p></div>
+      <div class="mini t"><b>Decide with numbers</b><p>Daily use, fills and PDF reports for meetings.</p></div>
+    </div>
+
+    <h2 class="sec-title">How it works</h2>
+    <div class="flow4">
+      <div class="mini"><b>Sensor</b><p>Above the water in each tank or compartment.</p></div>
+      <div class="mini"><b>Controller</b><p>Works out level and litres; keeps months of history.</p></div>
+      <div class="mini"><b>Level bar</b><p>Colour LED bar where people pass.</p></div>
+      <div class="mini last"><b>Phones</b><p>Live in the app or a browser.</p></div>
+    </div>
+
+    <h2 class="sec-title">Features</h2>
+    <div class="card"><ul class="ticks feat">
+      <li><b>Live level and litres</b> for every tank and compartment</li>
+      <li><b>Alerts</b> for low water, sensor faults and filling</li>
+      <li><b>Night leak check</b> flags a level that drops unused</li>
+      <li><b>Motor run time</b> and every fill, per day</li>
+      <li><b>Water used per day</b> and the busiest hour</li>
+      <li><b>Reports:</b> PDF, data export, WhatsApp sharing</li>
+      <li><b>Self-healing</b> with a built-in sensor test</li>
+      <li><b>Updates over Wi-Fi,</b> no site visit needed</li>
+      <li><b>Your data stays with you,</b> no cloud account</li>
+    </ul></div>
+
+    <h2 class="sec-title">From survey to savings</h2>
+    <div class="steps4">
+      <div><span class="n">1</span><b>Site survey</b><p>Tanks, sumps, power and Wi-Fi.</p></div>
+      <div><span class="n">2</span><b>Installation</b><p>Tanks stay in use; no emptying.</p></div>
+      <div><span class="n">3</span><b>Set-up and training</b><p>For the committee, in one session.</p></div>
+      <div><span class="n">4</span><b>Support</b><p>Updates and service visits.</p></div>
+    </div>
+
+    <div class="quote">
+      <div><h3>Get a quote for your society</h3><p>Book a site survey: we look at your tanks and send a quote.</p>
+        <p style="margin-top:6px">WhatsApp <a href="https://wa.me/919284817975" target="_blank" rel="noopener">+91 92848 17975</a>, <a href="https://woodyouloveit.com" target="_blank" rel="noopener">woodyouloveit.com</a></p>
+        <div style="margin-top:14px"><button class="btn wa" data-act="contact" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>Contact us on WhatsApp</button></div></div>
+      <div class="qrpair"><figure class="qrfig"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NzAiIGhlaWdodD0iNTcwIiBjbGFzcz0ic2Vnbm8iPjx0aXRsZT5XaGF0c0FwcCBjaGF0OiBMaXZlIGRlbW8gcGFnZSwgc2hvd24gb24gY29tcHV0ZXJzIGFuZCBwcm9qZWN0b3JzPC90aXRsZT48ZyB0cmFuc2Zvcm09InNjYWxlKDEwKSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGg1N3Y1N2gtNTd6Ii8+PHBhdGggY2xhc3M9InFybGluZSIgc3Ryb2tlPSIjMGIzYjM5IiBkPSJNNCA0LjVoN20yIDBoOG02IDBoMm01IDBoMm0xIDBoMW0yIDBoMW0zIDBoMW0xIDBoN20tNDkgMWgxbTUgMGgxbTIgMGgxbTIgMGgzbTMgMGgybTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgybTIgMGgxbTIgMGg1bTEgMGgxbTUgMGgxbS00OSAxaDFtMSAwaDNtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDJtNiAwaDRtMSAwaDJtMSAwaDFtMSAwaDJtNSAwaDJtMSAwaDFtMSAwaDNtMSAwaDFtLTQ5IDFoMW0xIDBoM20xIDBoMW0xIDBoMW0xIDBoMW0yIDBoM20xIDBoM20yIDBoMW0xIDBoMW0yIDBoMW0xIDBoM20zIDBoMm0yIDBoMW0yIDBoMW0xIDBoM20xIDBoMW0tNDkgMWgxbTEgMGgzbTEgMGgxbTEgMGgxbTIgMGgybTQgMGgybTIgMGg4bTEgMGgybTEgMGgxbTMgMGgxbTQgMGgxbTEgMGgzbTEgMGgxbS00OSAxaDFtNSAwaDFtMSAwaDFtMSAwaDFtMSAwaDJtMiAwaDFtMiAwaDFtMiAwaDFtMyAwaDJtMSAwaDFtMSAwaDJtMSAwaDJtMiAwaDFtMyAwaDFtNSAwaDFtLTQ5IDFoN20xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoN20tNDEgMWg3bTEgMGgybTQgMGgxbTMgMGgzbTEgMGgzbTYgMGgxbS00MCAxaDFtMSAwaDVtNCAwaDFtMyAwaDFtMiAwaDFtMSAwaDFtMSAwaDZtMiAwaDFtNSAwaDFtMSAwaDFtMSAwaDFtMSAwaDVtLTM5IDFoMW0yIDBoM205IDBoM20zIDBoMm0xIDBoMm0yIDBoMW00IDBoNG0yIDBoMW0tNDcgMWgxbTEgMGgxbTIgMGgxbTEgMGgybTIgMGgzbTIgMGgybTEgMGgxbTMgMGgxbTEgMGgxbTIgMGgxbTQgMGg1bTQgMGgxbTQgMGgxbS00NyAxaDNtNiAwaDFtMiAwaDZtMSAwaDFtMyAwaDFtMiAwaDJtMSAwaDVtMSAwaDFtMSAwaDJtMyAwaDJtLTQ1IDFoNG0xIDBoMW0xIDBoMW0xIDBoMW0yIDBoM202IDBoMW0xIDBoMm0zIDBoMW00IDBoMW0xIDBoMm0xIDBoMm0yIDBoMW0xIDBoMm0xIDBoMW0tNDkgMWgxbTYgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTMgMGgzbTQgMGgybTIgMGgxbTIgMGg0bTEgMGgxbS00OCAxaDNtMiAwaDJtMSAwaDFtMiAwaDNtMSAwaDFtMSAwaDJtMSAwaDNtMSAwaDNtMSAwaDFtMyAwaDFtMSAwaDFtMiAwaDRtMiAwaDFtMyAwaDJtLTQ4IDFoNW0xIDBoMm02IDBoMm0xIDBoM20xIDBoMW0yIDBoM20xIDBoMW00IDBoMW0xIDBoMm0xIDBoMW0yIDBoMW0xIDBoMm0yIDBoMW0tNDkgMWgybTIgMGgxbTEgMGgxbTUgMGgybTIgMGgxbTEgMGgxbTEgMGgybTEgMGgybTEgMGgxbTEgMGgxbTIgMGg0bTEgMGgxbTMgMGg0bTEgMGgybS00NyAxaDVtMiAwaDJtMSAwaDJtMSAwaDNtMiAwaDJtMSAwaDJtNCAwaDNtMiAwaDFtMSAwaDRtMSAwaDFtMSAwaDNtNCAwaDFtLTQ5IDFoMW0xIDBoMW0xIDBoNG0xIDBoM20zIDBoM20xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMW0xIDBoNG00IDBoMW0yIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0tNDcgMWgybTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgxbTIgMGgxbTMgMGgxbTEgMGgybTEgMGgzbTIgMGgybTIgMGgybTMgMGgzbTIgMGgxbS00NiAxaDVtMSAwaDFtMyAwaDFtMyAwaDJtMSAwaDRtMSAwaDFtMSAwaDFtMiAwaDFtMSAwaDFtMyAwaDJtMSAwaDVtMyAwaDFtMSAwaDFtLTQ5IDFoNG03IDBoNG0xIDBoMW0yIDBoMW0xIDBoMW0yIDBoM20xIDBoMW0xIDBoMW0yIDBoMW0xIDBoM20zIDBoNW0tNDYgMWgzbTEgMGg1bTUgMGgxbTIgMGgybTMgMGg1bTEgMGgybTQgMGgxbTEgMGgxbTEgMGgxbTEgMGg2bTEgMGgybS00OSAxaDVtMyAwaDFtMSAwaDNtMiAwaDJtMSAwaDFtMiAwaDJtMyAwaDNtMSAwaDRtNiAwaDFtMyAwaDFtMyAwaDFtLTQ4IDFoNG0xIDBoMW0xIDBoNG02IDBoMW0yIDBoMm0xIDBoMW0xIDBoMW0yIDBoMm0yIDBoNG0zIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0tNDUgMWgxbTEgMGgxbTMgMGgxbTIgMGgzbTEgMGgybTIgMGgxbTEgMGgybTMgMGgybTEgMGgzbTEgMGgxbTMgMGgxbTEgMGgybTMgMGgxbTIgMGgxbS00OCAxaDFtMiAwaDhtMSAwaDJtMSAwaDFtNCAwaDFtMSAwaDVtMiAwaDFtMSAwaDFtMiAwaDJtMSAwaDhtMyAwaDFtLTQ3IDFoMm0zIDBoMm0xIDBoM20xIDBoMW0xIDBoMm0zIDBoMW0xIDBoMm0zIDBoMm0xIDBoM20xIDBoMW00IDBoMm0zIDBoMW0xIDBoMm0tNDQgMWgzbTUgMGgzbTEgMGgzbTQgMGgybTEgMGgxbTYgMGgxbTEgMGgxbTEgMGg2bTIgMGgzbS00OSAxaDVtNyAwaDNtMiAwaDJtMiAwaDFtMSAwaDFtMSAwaDFtMyAwaDJtMiAwaDFtMSAwaDFtNSAwaDNtLTQ0IDFoMW0zIDBoMW0xIDBoNG0yIDBoMW0xIDBoMW0yIDBoM201IDBoMW01IDBoMW0xIDBoM20xIDBoNm00IDBoMm0tNDkgMWgxbTMgMGgybTUgMGgzbTcgMGgzbTEgMGgybTMgMGgybTEgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTQgMGgxbTEgMGgybS00NSAxaDFtMSAwaDNtMSAwaDJtMSAwaDFtMSAwaDRtMSAwaDJtMSAwaDFtMyAwaDFtMSAwaDJtNSAwaDJtMSAwaDNtMSAwaDFtMiAwaDFtMSAwaDFtLTQ5IDFoMm0xIDBoMm0yIDBoMW0xIDBoMm0yIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMW0zIDBoMm0xIDBoMW01IDBoM20xIDBoMW0zIDBoMW0tNDggMWgybTEgMGgxbTEgMGgzbTIgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTEgMGgybTUgMGgxbTEgMGgybTUgMGgxbTEgMGgybTIgMGgxbTIgMGgxbTIgMGgxbS00NiAxaDNtMiAwaDNtMSAwaDFtMSAwaDFtMSAwaDJtNCAwaDFtMSAwaDVtMiAwaDNtMyAwaDJtOCAwaDJtLTQ4IDFoMm0xIDBoM20yIDBoNG0zIDBoNm0zIDBoMW0zIDBoMm0yIDBoNW0xIDBoMm0xIDBoMW0xIDBoMW0xIDBoM20tNDggMWg0bTIgMGgxbTMgMGgxbTEgMGgxbTMgMGgxbTMgMGg1bTEgMGgxbTIgMGgxbTEgMGgybTIgMGgybTEgMGgzbTEgMGgxbTEgMGgxbS00NSAxaDFtMyAwaDJtMiAwaDFtMSAwaDFtMyAwaDFtMSAwaDFtMiAwaDFtMyAwaDFtNCAwaDFtNCAwaDNtMSAwaDVtMiAwaDFtMSAwaDJtLTQ4IDFoM202IDBoMm0yIDBoMW0xIDBoMW0xIDBoMW0yIDBoMW0yIDBoM20xIDBoM20xIDBoMm02IDBoMW0yIDBoMm0zIDBoMW0tNDkgMWgzbTMgMGgxbTEgMGgxbTEgMGgzbTEgMGgybTEgMGg0bTEgMGg1bTIgMGgybTIgMGgxbTEgMGgxNG0tNDEgMWgybTMgMGgybTEgMGgxbTQgMGgybTMgMGgxbTEgMGg0bTMgMGgzbTIgMGgxbTMgMGgybS00NiAxaDdtMyAwaDNtMiAwaDFtMyAwaDFtMiAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtNCAwaDRtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDNtMSAwaDFtLTQ5IDFoMW01IDBoMW0xIDBoNG0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0zIDBoMW0xIDBoMW0yIDBoMm03IDBoMW0zIDBoMm0xIDBoMW0tNDggMWgxbTEgMGgzbTEgMGgxbTEgMGg0bTIgMGgybTUgMGg3bTEgMGgybTUgMGgxbTMgMGg1bTEgMGgxbTEgMGgxbS00OSAxaDFtMSAwaDNtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDJtMiAwaDVtMSAwaDJtNCAwaDNtMiAwaDFtMSAwaDNtMiAwaDZtMiAwaDFtLTQ5IDFoMW0xIDBoM20xIDBoMW0xIDBoMW0xIDBoM20xIDBoMm0xIDBoMW0yIDBoNm0zIDBoMW0yIDBoMW0xIDBoNG00IDBoMm0xIDBoMm0tNDcgMWgxbTUgMGgxbTYgMGgybTEgMGgybTEgMGgzbTIgMGgxbTIgMGgxbTEgMGgxbTQgMGgybTEgMGgxbTEgMGg0bTIgMGgxbTIgMGgxbS00OSAxaDdtMSAwaDRtMSAwaDFtMiAwaDFtMiAwaDFtNSAwaDFtMiAwaDFtMiAwaDRtMSAwaDJtMSAwaDFtNiAwaDMiLz48L2c+PC9zdmc+Cg==" alt="QR code: WhatsApp us"><figcaption>Scan to WhatsApp us</figcaption></figure><figure class="qrfig"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NTAiIGhlaWdodD0iNDUwIiBjbGFzcz0ic2Vnbm8iPjx0aXRsZT5MaXZlIGRlbW86IEJyb2NodXJlIGZyb250LCBwb3N0ZXIsIGZseWVycywgc2xpZGVzPC90aXRsZT48ZyB0cmFuc2Zvcm09InNjYWxlKDEwKSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGg0NXY0NWgtNDV6Ii8+PHBhdGggY2xhc3M9InFybGluZSIgc3Ryb2tlPSIjMGIzYjM5IiBkPSJNNCA0LjVoN20xIDBoM20xIDBoMW0xIDBoM20xIDBoMm0yIDBoMm0zIDBoMW0yIDBoN20tMzcgMWgxbTUgMGgxbTIgMGgybTIgMGgxbTYgMGgxbTUgMGgxbTEgMGgxbTEgMGgxbTUgMGgxbS0zNyAxaDFtMSAwaDNtMSAwaDFtMSAwaDVtMiAwaDNtMSAwaDFtMSAwaDJtMSAwaDRtMiAwaDFtMSAwaDNtMSAwaDFtLTM3IDFoMW0xIDBoM20xIDBoMW0zIDBoMm0xIDBoMW0yIDBoM20yIDBoMW0zIDBoM20yIDBoMW0xIDBoM20xIDBoMW0tMzcgMWgxbTEgMGgzbTEgMGgxbTIgMGgxbTEgMGgybTEgMGgxbTEgMGgxbTEgMGgxbTIgMGgybTIgMGgxbTQgMGgxbTEgMGgzbTEgMGgxbS0zNyAxaDFtNSAwaDFtMSAwaDNtMiAwaDFtMiAwaDFtMSAwaDFtMyAwaDFtMSAwaDJtMiAwaDFtMSAwaDFtNSAwaDFtLTM3IDFoN20xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoN20tMjggMWgxbTIgMGgxbTIgMGgybTEgMGgzbTEgMGgxbTMgMGgxbS0yNyAxaDFtMSAwaDFtMyAwaDJtMyAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMiAwaDFtMSAwaDJtMSAwaDFtMSAwaDJtMiAwaDFtMiAwaDFtMSAwaDFtLTM3IDFoM20yIDBoMW0xIDBoMW0yIDBoMW0xIDBoMW0xIDBoMW0yIDBoMW0yIDBoMm0yIDBoMW0xIDBoMm0zIDBoMW0xIDBoNG0tMzcgMWgybTEgMGgybTEgMGgxbTQgMGg1bTMgMGgybTIgMGgybTEgMGg1bTEgMGgybTIgMGgxbS0zNiAxaDJtMSAwaDFtNiAwaDNtNCAwaDFtMSAwaDFtNSAwaDFtMSAwaDNtMiAwaDFtLTMzIDFoMW0xIDBoMW0xIDBoMm00IDBoM20xIDBoMm0xIDBoM20yIDBoMW0zIDBoMm0xIDBoMm0xIDBoMm0xIDBoMW0tMzcgMWg2bTEgMGgxbTQgMGg0bTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgzbTEgMGgybTEgMGgybTEgMGgxbS0zNCAxaDRtMSAwaDJtMSAwaDFtMyAwaDFtMiAwaDJtMiAwaDNtMSAwaDFtMSAwaDRtMSAwaDFtMiAwaDJtMSAwaDFtLTM3IDFoMW0xIDBoMW0yIDBoMW01IDBoMW0xIDBoM20yIDBoMm0yIDBoMW0xIDBoMW0xIDBoMW0yIDBoNW0xIDBoMW0tMzMgMWg1bTIgMGgzbTIgMGgybTEgMGg0bTEgMGgxbTEgMGgxbTQgMGgzbTIgMGgybS0zNSAxaDRtMSAwaDFtMiAwaDJtMSAwaDJtMSAwaDJtMiAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMiAwaDFtMiAwaDNtLTM2IDFoMm0yIDBoMm0xIDBoMm0xIDBoMm0xIDBoMW0xIDBoMW0yIDBoMW0zIDBoMW0xIDBoNW0xIDBoMW00IDBoMW0tMzcgMWgybTIgMGgybTIgMGgybTEgMGgybTIgMGgybTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgzbTIgMGgybS0zMyAxaDJtNCAwaDRtMSAwaDFtMSAwaDFtMyAwaDFtMiAwaDFtMyAwaDFtMyAwaDFtMSAwaDJtMSAwaDFtMSAwaDFtLTM1IDFoMm00IDBoMW0xIDBoM20xIDBoMm0xIDBoNW0yIDBoMm0yIDBoMm0xIDBoMW0tMzAgMWgxbTIgMGg0bTIgMGgzbTEgMGgybTMgMGgxbTIgMGgzbTEgMGgybTIgMGgxbTIgMGgybTEgMGgxbS0zMiAxaDFtNiAwaDFtMyAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDJtMSAwaDFtMSAwaDNtLTMzIDFoMW0xIDBoMW0xIDBoM20xIDBoMW0xIDBoMm0yIDBoMW0xIDBoNW0xIDBoM20xIDBoMm0xIDBoM20zIDBoMW0tMzMgMWgxbTMgMGg0bTEgMGgxbTUgMGgxbTEgMGgxbTEgMGgxbTEgMGgybTEgMGgxbTIgMGgxbTEgMGgybTEgMGgxbS0zNyAxaDRtMSAwaDJtMSAwaDJtMyAwaDFtMSAwaDFtMyAwaDFtMSAwaDNtMiAwaDJtMSAwaDJtMSAwaDFtMSAwaDFtMSAwaDFtLTM0IDFoMm0yIDBoMW0xIDBoMW0yIDBoMm00IDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0zIDBoMW0xIDBoMm0tMzcgMWgzbTMgMGgzbTIgMGgybTEgMGg0bTEgMGgxbTQgMGgxbTIgMGg4bS0yNyAxaDJtMSAwaDFtNCAwaDFtMiAwaDJtMSAwaDNtMyAwaDFtMyAwaDFtMiAwaDFtLTM2IDFoN20xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMTFtMiAwaDFtMSAwaDFtMSAwaDFtMyAwaDFtLTM3IDFoMW01IDBoMW00IDBoMm0zIDBoMW01IDBoMm0zIDBoMm0zIDBoMW0yIDBoMW0tMzYgMWgxbTEgMGgzbTEgMGgxbTMgMGgxbTMgMGg1bTEgMGgybTEgMGgzbTEgMGg2bS0zMyAxaDFtMSAwaDNtMSAwaDFtMyAwaDFtNSAwaDFtMyAwaDFtMyAwaDFtMyAwaDJtMiAwaDNtLTM1IDFoMW0xIDBoM20xIDBoMW0xIDBoMW0yIDBoMm0zIDBoNm0xIDBoMW0xIDBoMm0yIDBoMW0xIDBoMm0xIDBoMW0xIDBoMW0tMzcgMWgxbTUgMGgxbTMgMGgxbTQgMGgybTEgMGgxbTEgMGgxbTMgMGgxbTEgMGgxbTIgMGgybTEgMGgybS0zNCAxaDdtMSAwaDFtOCAwaDFtMiAwaDFtMiAwaDFtNCAwaDFtMSAwaDJtMSAwaDJtMSAwaDEiLz48L2c+PC9zdmc+Cg==" alt="QR code: open this demo on your phone"><figcaption>Open this demo on your phone</figcaption></figure></div>
+    </div>
+    <p class="foot">© 2026 woodyouloveit.com</p>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="tab" id="t-contact" role="tabpanel" aria-label="Contact us" hidden>
+    <div class="contact-grid">
+      <div class="card" id="enqForm">
+        <h2 style="margin-bottom:4px">Get it for your society</h2>
+        <p class="muted" style="margin:0 0 16px">Tell us about your society and we’ll send a quote. Fields marked * are needed. Your details go to us on WhatsApp; this page doesn’t store them online.</p>
+
+        <h3 class="formsec">Your society</h3>
+        <label class="f" data-k="society"><span>Society name *</span><input type="text" id="q_society" autocomplete="organization"><small class="ferr"></small></label>
+        <label class="f" data-k="address"><span>Society address *</span><textarea id="q_address" rows="2" autocomplete="street-address"></textarea><small class="ferr"></small></label>
+        <div class="f2">
+          <label class="f" data-k="city"><span>City or area *</span><input type="text" id="q_city" autocomplete="address-level2"><small class="ferr"></small></label>
+          <label class="f" data-k="pin"><span>PIN code</span><input type="text" id="q_pin" inputmode="numeric" maxlength="6" autocomplete="postal-code"><small class="ferr"></small></label>
+        </div>
+
+        <h3 class="formsec">Point of contact</h3>
+        <label class="f" data-k="person"><span>Contact person *</span><input type="text" id="q_person" autocomplete="name"><small class="ferr"></small></label>
+        <div class="f2">
+          <label class="f" data-k="role"><span>Role in the society</span><select id="q_role"><option value="">Choose</option><option>Chairman</option><option>Secretary</option><option>Treasurer</option><option>Committee member</option><option>Facility or estate manager</option><option>Resident</option><option>Other</option></select><small class="ferr"></small></label>
+          <label class="f" data-k="time"><span>Best time to call</span><select id="q_time"><option value="">Any time</option><option>Morning (9 am to 12 pm)</option><option>Afternoon (12 pm to 4 pm)</option><option>Evening (4 pm to 8 pm)</option></select><small class="ferr"></small></label>
+        </div>
+        <div class="f2">
+          <label class="f" data-k="mobile"><span>Mobile number *</span><span class="pfx"><span>+91</span><input type="tel" id="q_mobile" inputmode="tel" maxlength="14" autocomplete="tel-national"></span><small class="ferr"></small></label>
+          <label class="f" data-k="email"><span>Email</span><input type="email" id="q_email" autocomplete="email"><small class="ferr"></small></label>
+        </div>
+
+        <h3 class="formsec">Buildings and tanks</h3>
+        <div class="f2">
+          <label class="f" data-k="buildings"><span>Buildings or wings *</span><input type="text" id="q_buildings" inputmode="numeric" maxlength="3"><small class="ferr"></small></label>
+          <label class="f" data-k="flats"><span>Average flats per building *</span><input type="text" id="q_flats" inputmode="numeric" maxlength="3"><small class="ferr"></small></label>
+        </div>
+        <div class="f2">
+          <label class="f" data-k="tanks"><span>Overhead tanks *</span><input type="text" id="q_tanks" inputmode="numeric" maxlength="3"><small class="ferr"></small></label>
+          <label class="f" data-k="sumps"><span>Underground sumps</span><input type="text" id="q_sumps" inputmode="numeric" maxlength="2"><small class="ferr"></small></label>
+        </div>
+        <p class="muted" id="q_total" style="margin:-4px 0 4px;font-size:.9rem">Count each tank once, even if it has two compartments.</p>
+
+        <h3 class="formsec">Anything else</h3>
+        <label class="f" data-k="message"><span>Message or questions</span><textarea id="q_message" rows="3"></textarea><small class="ferr"></small></label>
+        <label class="check" data-k="consent"><input type="checkbox" id="q_consent"><span>I agree to be contacted about the Water Tanks Monitor on this number.</span></label>
+        <small class="ferr" id="q_consent_err" style="display:block;margin-bottom:10px"></small>
+
+        <div class="row">
+          <button class="btn wa" data-act="sendWa" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>Send on WhatsApp</button>
+          <button class="btn" data-act="shareEnq">Share another way</button>
+          <button class="btn" data-act="clearEnq" style="margin-left:auto">Clear form</button>
+        </div>
+      </div>
+
+      <div class="card side">
+        <h3>Talk to us directly</h3>
+        <p style="margin:6px 0 10px"><a class="wa-link" href="https://wa.me/919284817975" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>+91 92848 17975</a></p>
+        <div class="qrside"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NzAiIGhlaWdodD0iNTcwIiBjbGFzcz0ic2Vnbm8iPjx0aXRsZT5XaGF0c0FwcCBjaGF0OiBMaXZlIGRlbW8gcGFnZSwgc2hvd24gb24gY29tcHV0ZXJzIGFuZCBwcm9qZWN0b3JzPC90aXRsZT48ZyB0cmFuc2Zvcm09InNjYWxlKDEwKSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgMGg1N3Y1N2gtNTd6Ii8+PHBhdGggY2xhc3M9InFybGluZSIgc3Ryb2tlPSIjMGIzYjM5IiBkPSJNNCA0LjVoN20yIDBoOG02IDBoMm01IDBoMm0xIDBoMW0yIDBoMW0zIDBoMW0xIDBoN20tNDkgMWgxbTUgMGgxbTIgMGgxbTIgMGgzbTMgMGgybTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgybTIgMGgxbTIgMGg1bTEgMGgxbTUgMGgxbS00OSAxaDFtMSAwaDNtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDJtNiAwaDRtMSAwaDJtMSAwaDFtMSAwaDJtNSAwaDJtMSAwaDFtMSAwaDNtMSAwaDFtLTQ5IDFoMW0xIDBoM20xIDBoMW0xIDBoMW0xIDBoMW0yIDBoM20xIDBoM20yIDBoMW0xIDBoMW0yIDBoMW0xIDBoM20zIDBoMm0yIDBoMW0yIDBoMW0xIDBoM20xIDBoMW0tNDkgMWgxbTEgMGgzbTEgMGgxbTEgMGgxbTIgMGgybTQgMGgybTIgMGg4bTEgMGgybTEgMGgxbTMgMGgxbTQgMGgxbTEgMGgzbTEgMGgxbS00OSAxaDFtNSAwaDFtMSAwaDFtMSAwaDFtMSAwaDJtMiAwaDFtMiAwaDFtMiAwaDFtMyAwaDJtMSAwaDFtMSAwaDJtMSAwaDJtMiAwaDFtMyAwaDFtNSAwaDFtLTQ5IDFoN20xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoN20tNDEgMWg3bTEgMGgybTQgMGgxbTMgMGgzbTEgMGgzbTYgMGgxbS00MCAxaDFtMSAwaDVtNCAwaDFtMyAwaDFtMiAwaDFtMSAwaDFtMSAwaDZtMiAwaDFtNSAwaDFtMSAwaDFtMSAwaDFtMSAwaDVtLTM5IDFoMW0yIDBoM205IDBoM20zIDBoMm0xIDBoMm0yIDBoMW00IDBoNG0yIDBoMW0tNDcgMWgxbTEgMGgxbTIgMGgxbTEgMGgybTIgMGgzbTIgMGgybTEgMGgxbTMgMGgxbTEgMGgxbTIgMGgxbTQgMGg1bTQgMGgxbTQgMGgxbS00NyAxaDNtNiAwaDFtMiAwaDZtMSAwaDFtMyAwaDFtMiAwaDJtMSAwaDVtMSAwaDFtMSAwaDJtMyAwaDJtLTQ1IDFoNG0xIDBoMW0xIDBoMW0xIDBoMW0yIDBoM202IDBoMW0xIDBoMm0zIDBoMW00IDBoMW0xIDBoMm0xIDBoMm0yIDBoMW0xIDBoMm0xIDBoMW0tNDkgMWgxbTYgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTMgMGgzbTQgMGgybTIgMGgxbTIgMGg0bTEgMGgxbS00OCAxaDNtMiAwaDJtMSAwaDFtMiAwaDNtMSAwaDFtMSAwaDJtMSAwaDNtMSAwaDNtMSAwaDFtMyAwaDFtMSAwaDFtMiAwaDRtMiAwaDFtMyAwaDJtLTQ4IDFoNW0xIDBoMm02IDBoMm0xIDBoM20xIDBoMW0yIDBoM20xIDBoMW00IDBoMW0xIDBoMm0xIDBoMW0yIDBoMW0xIDBoMm0yIDBoMW0tNDkgMWgybTIgMGgxbTEgMGgxbTUgMGgybTIgMGgxbTEgMGgxbTEgMGgybTEgMGgybTEgMGgxbTEgMGgxbTIgMGg0bTEgMGgxbTMgMGg0bTEgMGgybS00NyAxaDVtMiAwaDJtMSAwaDJtMSAwaDNtMiAwaDJtMSAwaDJtNCAwaDNtMiAwaDFtMSAwaDRtMSAwaDFtMSAwaDNtNCAwaDFtLTQ5IDFoMW0xIDBoMW0xIDBoNG0xIDBoM20zIDBoM20xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMW0xIDBoNG00IDBoMW0yIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0tNDcgMWgybTEgMGgxbTEgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTEgMGgxbTIgMGgxbTMgMGgxbTEgMGgybTEgMGgzbTIgMGgybTIgMGgybTMgMGgzbTIgMGgxbS00NiAxaDVtMSAwaDFtMyAwaDFtMyAwaDJtMSAwaDRtMSAwaDFtMSAwaDFtMiAwaDFtMSAwaDFtMyAwaDJtMSAwaDVtMyAwaDFtMSAwaDFtLTQ5IDFoNG03IDBoNG0xIDBoMW0yIDBoMW0xIDBoMW0yIDBoM20xIDBoMW0xIDBoMW0yIDBoMW0xIDBoM20zIDBoNW0tNDYgMWgzbTEgMGg1bTUgMGgxbTIgMGgybTMgMGg1bTEgMGgybTQgMGgxbTEgMGgxbTEgMGgxbTEgMGg2bTEgMGgybS00OSAxaDVtMyAwaDFtMSAwaDNtMiAwaDJtMSAwaDFtMiAwaDJtMyAwaDNtMSAwaDRtNiAwaDFtMyAwaDFtMyAwaDFtLTQ4IDFoNG0xIDBoMW0xIDBoNG02IDBoMW0yIDBoMm0xIDBoMW0xIDBoMW0yIDBoMm0yIDBoNG0zIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0tNDUgMWgxbTEgMGgxbTMgMGgxbTIgMGgzbTEgMGgybTIgMGgxbTEgMGgybTMgMGgybTEgMGgzbTEgMGgxbTMgMGgxbTEgMGgybTMgMGgxbTIgMGgxbS00OCAxaDFtMiAwaDhtMSAwaDJtMSAwaDFtNCAwaDFtMSAwaDVtMiAwaDFtMSAwaDFtMiAwaDJtMSAwaDhtMyAwaDFtLTQ3IDFoMm0zIDBoMm0xIDBoM20xIDBoMW0xIDBoMm0zIDBoMW0xIDBoMm0zIDBoMm0xIDBoM20xIDBoMW00IDBoMm0zIDBoMW0xIDBoMm0tNDQgMWgzbTUgMGgzbTEgMGgzbTQgMGgybTEgMGgxbTYgMGgxbTEgMGgxbTEgMGg2bTIgMGgzbS00OSAxaDVtNyAwaDNtMiAwaDJtMiAwaDFtMSAwaDFtMSAwaDFtMyAwaDJtMiAwaDFtMSAwaDFtNSAwaDNtLTQ0IDFoMW0zIDBoMW0xIDBoNG0yIDBoMW0xIDBoMW0yIDBoM201IDBoMW01IDBoMW0xIDBoM20xIDBoNm00IDBoMm0tNDkgMWgxbTMgMGgybTUgMGgzbTcgMGgzbTEgMGgybTMgMGgybTEgMGgxbTEgMGgxbTEgMGgxbTIgMGgxbTQgMGgxbTEgMGgybS00NSAxaDFtMSAwaDNtMSAwaDJtMSAwaDFtMSAwaDRtMSAwaDJtMSAwaDFtMyAwaDFtMSAwaDJtNSAwaDJtMSAwaDNtMSAwaDFtMiAwaDFtMSAwaDFtLTQ5IDFoMm0xIDBoMm0yIDBoMW0xIDBoMm0yIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0xIDBoMW0xIDBoMW0zIDBoMm0xIDBoMW01IDBoM20xIDBoMW0zIDBoMW0tNDggMWgybTEgMGgxbTEgMGgzbTIgMGgxbTIgMGgybTEgMGgxbTEgMGgxbTEgMGgybTUgMGgxbTEgMGgybTUgMGgxbTEgMGgybTIgMGgxbTIgMGgxbTIgMGgxbS00NiAxaDNtMiAwaDNtMSAwaDFtMSAwaDFtMSAwaDJtNCAwaDFtMSAwaDVtMiAwaDNtMyAwaDJtOCAwaDJtLTQ4IDFoMm0xIDBoM20yIDBoNG0zIDBoNm0zIDBoMW0zIDBoMm0yIDBoNW0xIDBoMm0xIDBoMW0xIDBoMW0xIDBoM20tNDggMWg0bTIgMGgxbTMgMGgxbTEgMGgxbTMgMGgxbTMgMGg1bTEgMGgxbTIgMGgxbTEgMGgybTIgMGgybTEgMGgzbTEgMGgxbTEgMGgxbS00NSAxaDFtMyAwaDJtMiAwaDFtMSAwaDFtMyAwaDFtMSAwaDFtMiAwaDFtMyAwaDFtNCAwaDFtNCAwaDNtMSAwaDVtMiAwaDFtMSAwaDJtLTQ4IDFoM202IDBoMm0yIDBoMW0xIDBoMW0xIDBoMW0yIDBoMW0yIDBoM20xIDBoM20xIDBoMm02IDBoMW0yIDBoMm0zIDBoMW0tNDkgMWgzbTMgMGgxbTEgMGgxbTEgMGgzbTEgMGgybTEgMGg0bTEgMGg1bTIgMGgybTIgMGgxbTEgMGgxNG0tNDEgMWgybTMgMGgybTEgMGgxbTQgMGgybTMgMGgxbTEgMGg0bTMgMGgzbTIgMGgxbTMgMGgybS00NiAxaDdtMyAwaDNtMiAwaDFtMyAwaDFtMiAwaDFtMSAwaDFtMSAwaDFtMSAwaDFtNCAwaDRtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDNtMSAwaDFtLTQ5IDFoMW01IDBoMW0xIDBoNG0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMW0xIDBoMm0zIDBoMW0xIDBoMW0yIDBoMm03IDBoMW0zIDBoMm0xIDBoMW0tNDggMWgxbTEgMGgzbTEgMGgxbTEgMGg0bTIgMGgybTUgMGg3bTEgMGgybTUgMGgxbTMgMGg1bTEgMGgxbTEgMGgxbS00OSAxaDFtMSAwaDNtMSAwaDFtMSAwaDFtMSAwaDFtMSAwaDJtMiAwaDVtMSAwaDJtNCAwaDNtMiAwaDFtMSAwaDNtMiAwaDZtMiAwaDFtLTQ5IDFoMW0xIDBoM20xIDBoMW0xIDBoMW0xIDBoM20xIDBoMm0xIDBoMW0yIDBoNm0zIDBoMW0yIDBoMW0xIDBoNG00IDBoMm0xIDBoMm0tNDcgMWgxbTUgMGgxbTYgMGgybTEgMGgybTEgMGgzbTIgMGgxbTIgMGgxbTEgMGgxbTQgMGgybTEgMGgxbTEgMGg0bTIgMGgxbTIgMGgxbS00OSAxaDdtMSAwaDRtMSAwaDFtMiAwaDFtMiAwaDFtNSAwaDFtMiAwaDFtMiAwaDRtMSAwaDJtMSAwaDFtNiAwaDMiLz48L2c+PC9zdmc+Cg==" alt="QR code: WhatsApp us"><p><b>On a computer?</b> Scan with your phone camera to chat with us on WhatsApp.</p></div>
+        <p class="muted" style="margin:0 0 6px">WhatsApp us any time, or visit <a href="https://woodyouloveit.com" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600">woodyouloveit.com</a>.</p>
+        <h3 style="margin-top:20px">What happens next</h3>
+        <dl class="kv">
+          <dt>1</dt><dd>Site survey: tanks, sumps, power and Wi-Fi</dd>
+          <dt>2</dt><dd>Quote for your society</dd>
+          <dt>3</dt><dd>Installation; tanks stay in use</dd>
+          <dt>4</dt><dd>Set-up and training for the committee</dd>
+        </dl>
+        <div class="row" style="margin-top:6px"><button class="btn" data-go="about">About the product</button><button class="btn" data-go="overview">Back to the demo</button></div>
+      </div>
+    </div>
+    <p class="foot">© 2026 woodyouloveit.com</p>
+  </section>
+
 </main>
 
 <!-- DEMO CONTROLS -->
@@ -413,6 +630,7 @@ input[type=range]{width:100%;accent-color:var(--teal)}
 'use strict';
 const NATIVE=window.WTMSDemo||null;
 if(NATIVE)document.documentElement.classList.add('inapp');
+const WA_NUM='919284817975',WA_SHOW='+91 92848 17975';
 const MIN=60000,HOUR=3600000,DAY=86400000;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -954,8 +1172,8 @@ function tour(){
    <li>Sign in as <b>Admin</b> (password <b>demo-admin</b>) to change settings and calibration, or as <b>Service</b> (key <b>demo-service</b>) to try a firmware update.</li>
    <li>Speed up time to 1200× to watch a whole day go by in about a minute.</li>
   </ul>
-  ${NATIVE?'<p style="margin:0 0 14px">Want this for your society? Tap <b>Contact us</b> at any time and send us your details.</p>':''}
-  <div class="row" style="justify-content:flex-end">${NATIVE?'<button class="btn" data-act="contact">Contact us</button>':''}<button class="btn pri" data-act="close">Start exploring</button></div>`);
+  <p style="margin:0 0 14px">Want this for your society? Read <b>About</b> for how it works, and tap <b>Contact us</b> to send your details on WhatsApp.</p>
+  <div class="row" style="justify-content:flex-end"><button class="btn" data-act="contact">Contact us</button><button class="btn pri" data-act="close">Start exploring</button></div>`);
 }
 function signIn(){
   if(state.role!=='viewer'){state.role='viewer';onRole();toast('Signed out');return}
@@ -1014,7 +1232,10 @@ document.addEventListener('click',e=>{
   const a=t.dataset.act;
   if(a==='close')closeModal();
   else if(a==='signin')signIn();
-  else if(a==='contact'){closeModal();if(NATIVE)NATIVE.contactUs()}
+  else if(a==='contact'){closeModal();setTab('contact')}
+  else if(a==='sendWa')enqSend();
+  else if(a==='shareEnq')enqShare();
+  else if(a==='clearEnq')confirmBox('Clear the form?','This removes everything you’ve typed in the contact form.','Clear form',()=>{enqFill({});toast('Form cleared')});
   else if(a==='fillPw'){$('#pw').value=$('input[name=rl]:checked').value==='admin'?'demo-admin':'demo-service'}
   else if(a==='doSignin')doSignin();
   else if(a==='print'&&NATIVE){document.body.classList.add('printing');NATIVE.print('Water report, '+dev.site.org)}
@@ -1075,9 +1296,69 @@ $('#dLeak').onclick=()=>{const dev=D(),S=dev.st;S.leak=!S.leak;syncDock();toast(
 $('#dFault').onclick=()=>{const dev=D(),S=dev.st;S.fault=!S.fault;S.faultSince=0;S.healed=false;
   addLog(dev,state.simNow,S.fault?'alert':'device',S.fault?'Sensor on '+dev.comps[0].name+' not responding':'Sensor readings back to normal');syncDock();toast(S.fault?'Sensor disconnected':'Sensor reconnected')};
 
+
+/* ---------- contact us (web) ---------- */
+const ENQ=['society','address','city','pin','person','role','time','mobile','email','buildings','flats','tanks','sumps','message'];
+function enqRead(){const e={};ENQ.forEach(k=>e[k]=($('#q_'+k).value||'').trim());e.consent=$('#q_consent').checked;return e}
+function enqFill(e){ENQ.forEach(k=>{$('#q_'+k).value=e[k]||''});$('#q_consent').checked=!!e.consent;enqClearErr();enqTotal();enqSave()}
+function enqSave(){try{localStorage.setItem('wtms-demo-enquiry',JSON.stringify(enqRead()))}catch(_){}}
+function enqLoad(){let e={};try{e=JSON.parse(localStorage.getItem('wtms-demo-enquiry')||'{}')||{}}catch(_){}ENQ.forEach(k=>{if(e[k])$('#q_'+k).value=e[k]});$('#q_consent').checked=!!e.consent;enqTotal()}
+function enqMobile(m){let d=String(m).replace(/\D/g,'');if(d.length===12&&d.startsWith('91'))d=d.slice(2);if(d.length===11&&d[0]==='0')d=d.slice(1);return/^[6-9]\d{9}$/.test(d)?d:null}
+function enqTotal(){const b=parseInt($('#q_buildings').value,10),f=parseInt($('#q_flats').value,10);
+  $('#q_total').textContent='Count each tank once, even if it has two compartments.'+(b>0&&f>0?' About '+nf.format(b*f)+' flats in total.':'')}
+function enqProblems(e){const p={};
+  if(!e.society)p.society='Enter the society name';
+  if(!e.address)p.address='Enter the society address';
+  if(!e.city)p.city='Enter the city or area';
+  if(e.pin&&!/^[1-9]\d{5}$/.test(e.pin))p.pin='PIN code has 6 digits';
+  if(!e.person)p.person='Enter who we should talk to';
+  if(!e.mobile)p.mobile='Enter a mobile number';else if(!enqMobile(e.mobile))p.mobile='Enter a 10-digit Indian mobile number';
+  if(e.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.email))p.email='Check the email address';
+  const cnt=(k,min,max,msg)=>{const n=Number(e[k]);if(!e[k])p[k]=msg;else if(!/^\d+$/.test(e[k])||n<min||n>max)p[k]='Use a number from '+min+' to '+max};
+  cnt('buildings',1,300,'Enter the number of buildings or wings');cnt('flats',1,999,'Enter the average flats per building');
+  cnt('tanks',1,999,'Enter the number of overhead tanks');if(e.sumps)cnt('sumps',0,99,'');
+  if(!e.consent)p.consent='Tick this so we may call or message you';
+  return p}
+function enqClearErr(){$$('#enqForm .f').forEach(f=>{f.classList.remove('invalid');const s=$('.ferr',f);if(s)s.textContent=''});$('#q_consent_err').textContent=''}
+function enqShowErr(p){enqClearErr();let first=null;
+  for(const k in p){if(k==='consent'){$('#q_consent_err').textContent=p[k];first=first||$('#q_consent');continue}
+    const f=$('#enqForm .f[data-k="'+k+'"]');if(!f)continue;f.classList.add('invalid');$('.ferr',f).textContent=p[k];first=first||$('#q_'+k)}
+  if(first){first.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>first.focus({preventScroll:true}),300)}
+  toast('Please check the highlighted fields')}
+function enqMsg(e){const m=enqMobile(e.mobile),b=parseInt(e.buildings,10),f=parseInt(e.flats,10),L=[];
+  L.push('*Water Tanks Monitor enquiry*','');
+  L.push('*Society:* '+e.society,'*Address:* '+e.address.replace(/\s*\n\s*/g,', '),'*City / area:* '+e.city+(e.pin?', '+e.pin:''),'');
+  L.push('*Contact:* '+e.person+(e.role?' ('+e.role+')':''),'*Mobile:* '+(m?'+91 '+m.slice(0,5)+' '+m.slice(5):e.mobile));
+  if(e.email)L.push('*Email:* '+e.email);if(e.time)L.push('*Best time to call:* '+e.time);
+  L.push('','*Buildings / wings:* '+e.buildings,'*Overhead tanks:* '+e.tanks);if(e.sumps)L.push('*Underground sumps:* '+e.sumps);
+  L.push('*Average flats per building:* '+e.flats+(b>0&&f>0?' (about '+(b*f)+' flats)':''));
+  if(e.message)L.push('','*Message:* '+e.message);
+  L.push('','Sent from the Water Tanks Monitor live demo');return L.join('\n')}
+function enqSend(){const e=enqRead(),p=enqProblems(e);if(Object.keys(p).length){enqShowErr(p);return}
+  enqSave();const url='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(enqMsg(e));
+  let w=null;try{w=window.open(url,'_blank','noopener')}catch(_){}
+  openModal(`<div class="mascot-hero"><svg viewBox="0 0 84 100" class="mascot-anim"><use href="#mascot"/></svg><h2>Almost done</h2></div>
+    <p>WhatsApp opens with your details filled in. <b>Tap Send in WhatsApp</b> to reach us at ${WA_SHOW}. We usually reply within a working day.</p>
+    <p class="muted" style="font-size:.92rem">If WhatsApp didn’t open, <a href="${esc(url)}" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600">open it here</a>.</p>
+    <div class="row" style="justify-content:flex-end"><button class="btn" data-act="close">Keep the form</button><button class="btn pri" id="enqDone">Clear the form</button></div>`);
+  $('#enqDone').onclick=()=>{closeModal();enqFill({})}}
+async function enqShare(){const e=enqRead(),p=enqProblems(e);if(Object.keys(p).length){enqShowErr(p);return}
+  const text=enqMsg(e).replace(/\*/g,'');
+  if(navigator.share){try{await navigator.share({title:'Water Tanks Monitor enquiry: '+e.society,text});return}catch(err){if(err&&err.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(text);toast('Copied. Paste it into WhatsApp, SMS or email to '+WA_SHOW+'.');return}catch(_){}
+  openModal(`<h2>Your details</h2><p class="muted">Copy this and send it to ${WA_SHOW} on WhatsApp, or to your woodyouloveit contact.</p>
+    <textarea readonly style="width:100%;min-height:240px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:var(--surface-2)">${esc(text)}</textarea>`)}
+document.addEventListener('input',e=>{const t=e.target;if(!t.id||!t.id.startsWith('q_'))return;
+  const f=t.closest('.f');if(f){f.classList.remove('invalid');const s=$('.ferr',f);if(s)s.textContent=''}
+  if(t.id==='q_consent')$('#q_consent_err').textContent='';
+  if(t.id==='q_buildings'||t.id==='q_flats')enqTotal();enqSave()});
+document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('q_'))enqSave()});
+
 /* ---------- tabs, rendering, loop ---------- */
-const TABS=['overview','analytics','setup','log','service'];
-function setTab(tab,noHash){if(!TABS.includes(tab))tab='overview';state.tab=tab;
+const TABS=['overview','analytics','setup','log','service','about','contact'];
+function setTab(tab,noHash){if(!TABS.includes(tab))tab='overview';
+  if(tab==='contact'&&NATIVE){NATIVE.contactUs();if(state.tab==='contact')tab='overview';else return}
+  state.tab=tab;document.body.classList.toggle('nodock',tab==='about'||tab==='contact');
   $$('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
   TABS.forEach(x=>$('#t-'+x).hidden=x!==tab);
   if(!noHash){try{history.replaceState(null,'','#'+tab)}catch(_){}}
@@ -1114,11 +1395,12 @@ function boot(){
   DEVS.forEach(liveRead);buildTank();syncDock();updConn();
 }
 // ---- hooks for the Android demo app ----
-if(NATIVE){$('#contactBtn').hidden=false}
+if(NATIVE){$('#contactTab').hidden=true}
 window.wtmsBack=()=>{if(!$('#modal').hidden){closeModal();return true}if(state.tab!=='overview'){setTab('overview');return true}return false};
 window.wtmsTour=()=>tour();
 window.wtmsReset=()=>$('#resetBtn').click();
 window.wtmsPrintDone=()=>document.body.classList.remove('printing');
+enqLoad();
 boot();
 setTab((location.hash||'').slice(1)||'overview',true);
 window.addEventListener('hashchange',()=>setTab(location.hash.slice(1),true));

@@ -41,7 +41,9 @@ android {
             if (keystoreFile != null) signingConfig = signingConfigs.getByName("release")
         }
         debug {
-            // Same app ID as release, so the build script can install and launch either
+            // The build script installs and starts the debug build as <app ID>.debug, next to the release build
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
     }
 

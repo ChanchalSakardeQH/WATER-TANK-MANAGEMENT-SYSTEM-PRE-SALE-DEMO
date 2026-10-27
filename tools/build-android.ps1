@@ -91,10 +91,10 @@ Set-StrictMode -Version 2.0
 $OnWindows   = ($env:OS -eq 'Windows_NT')
 $Repo        = Split-Path -Parent $PSScriptRoot
 $AndroidDir  = Join-Path $Repo 'android'
-$AppName     = 'Water Tanks Monitor'
-$AppId       = 'com.woodyouloveit.wtms'
+$AppName     = 'WTMS Demo'
+$AppId       = 'com.woodyouloveit.wtms.demo'
 $DebugAppId  = "$AppId.debug"                 # the debug build installs as its own app, "WTMS Debug"
-$FilePrefix  = 'woodyouloveit-wtms'
+$FilePrefix  = 'woodyouloveit-wtms-demo'
 $Home_       = if ($OnWindows) { $env:USERPROFILE } else { $env:HOME }
 
 # Your Android folder: the one holding Sdk plus Android Studio or Gradle (for example D:\Android),
